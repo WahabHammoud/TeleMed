@@ -9,6 +9,57 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      consultations: {
+        Row: {
+          created_at: string
+          doctor_id: string
+          id: string
+          patient_id: string
+          room_name: string | null
+          room_url: string | null
+          scheduled_for: string
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          doctor_id: string
+          id?: string
+          patient_id: string
+          room_name?: string | null
+          room_url?: string | null
+          scheduled_for: string
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          doctor_id?: string
+          id?: string
+          patient_id?: string
+          room_name?: string | null
+          room_url?: string | null
+          scheduled_for?: string
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consultations_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultations_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       medical_documents: {
         Row: {
           created_at: string
@@ -60,42 +111,57 @@ export type Database = {
       profiles: {
         Row: {
           address: string | null
+          bio: string | null
+          consultation_fee: number | null
           created_at: string
           date_of_birth: string | null
+          education: string[] | null
           first_name: string | null
           id: string
           is_doctor: boolean | null
+          languages: string[] | null
           last_name: string | null
           medical_license_number: string | null
           phone: string | null
           specialty: string | null
           updated_at: string
+          years_of_experience: number | null
         }
         Insert: {
           address?: string | null
+          bio?: string | null
+          consultation_fee?: number | null
           created_at?: string
           date_of_birth?: string | null
+          education?: string[] | null
           first_name?: string | null
           id: string
           is_doctor?: boolean | null
+          languages?: string[] | null
           last_name?: string | null
           medical_license_number?: string | null
           phone?: string | null
           specialty?: string | null
           updated_at?: string
+          years_of_experience?: number | null
         }
         Update: {
           address?: string | null
+          bio?: string | null
+          consultation_fee?: number | null
           created_at?: string
           date_of_birth?: string | null
+          education?: string[] | null
           first_name?: string | null
           id?: string
           is_doctor?: boolean | null
+          languages?: string[] | null
           last_name?: string | null
           medical_license_number?: string | null
           phone?: string | null
           specialty?: string | null
           updated_at?: string
+          years_of_experience?: number | null
         }
         Relationships: []
       }
