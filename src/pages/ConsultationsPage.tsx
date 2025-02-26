@@ -65,6 +65,10 @@ export default function ConsultationsPage() {
         throw new Error("Please select date, time and doctor");
       }
 
+      // Get the current user
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) throw new Error("You must be logged in to book a consultation");
+
       const scheduledFor = new Date(selectedDate);
       const [hours] = selectedTime.split(":");
       scheduledFor.setHours(parseInt(hours), 0, 0, 0);
@@ -73,6 +77,7 @@ export default function ConsultationsPage() {
         .from("consultations")
         .insert({
           doctor_id: selectedDoctor,
+          patient_id: user.id, // Add the patient_id from the current user
           scheduled_for: scheduledFor.toISOString(),
         })
         .select()
@@ -101,6 +106,9 @@ export default function ConsultationsPage() {
         title: "Consultation Booked!",
         description: `Your consultation is scheduled for ${selectedDate?.toLocaleDateString()} at ${selectedTime}`,
       });
+      // Reset selection
+      setSelectedTime(null);
+      setSelectedDoctor(null);
     },
     onError: (error) => {
       toast({
