@@ -1,58 +1,66 @@
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
-import { AccessToken } from 'npm:twilio@4.19.0';
+import { serve } from 'https://deno.land/std@0.177.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
-
-const twilioAccountSid = Deno.env.get('TWILIO_ACCOUNT_SID');
-const twilioApiKey = Deno.env.get('TWILIO_API_KEY');
-const twilioApiSecret = Deno.env.get('TWILIO_API_SECRET');
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    const { userId, roomName } = await req.json();
+    const { consultationId } = await req.json()
 
-    // Create an access token
-    const token = new AccessToken(
-      twilioAccountSid!,
-      twilioApiKey!,
-      twilioApiSecret!,
-      { identity: userId }
-    );
+    // Create Supabase client
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    )
 
-    // Create a video grant
-    const videoGrant = new AccessToken.VideoGrant({
-      room: roomName,
-    });
+    // Get consultation details
+    const { data: consultation, error: consultationError } = await supabaseClient
+      .from('consultations')
+      .select('*')
+      .eq('id', consultationId)
+      .single()
 
-    // Add the grant to the token
-    token.addGrant(videoGrant);
+    if (consultationError) throw consultationError
 
-    // Generate the token
-    const accessToken = token.toJwt();
+    // Create Daily.co meeting token
+    const response = await fetch('https://api.daily.co/v1/meeting-tokens', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${Deno.env.get('DAILY_API_KEY')}`,
+      },
+      body: JSON.stringify({
+        properties: {
+          room_name: consultation.room_name,
+          exp: Math.floor(Date.now() / 1000) + 60 * 60 * 2, // 2 hour expiration
+        },
+      }),
+    })
+
+    const data = await response.json()
 
     return new Response(
-      JSON.stringify({ token: accessToken }),
+      JSON.stringify({ token: data.token }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      },
-    );
+        status: 200,
+      }
+    )
   } catch (error) {
-    console.error('Error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
-        status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      },
-    );
+        status: 400,
+      }
+    )
   }
-});
+})
