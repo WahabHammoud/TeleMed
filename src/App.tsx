@@ -13,6 +13,8 @@ import AppointmentsPage from "./pages/AppointmentsPage";
 import ShopPage from "./pages/ShopPage";
 import SettingsPage from "./pages/SettingsPage";
 import HelpPage from "./pages/HelpPage";
+import MessagesPage from "./pages/MessagesPage";
+import CommunityPage from "./pages/CommunityPage";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +33,8 @@ const App = () => (
           <Route path="/shop" element={<ShopPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/help" element={<HelpPage />} />
+          <Route path="/messages" element={<MessagesPage />} />
+          <Route path="/community" element={<CommunityPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

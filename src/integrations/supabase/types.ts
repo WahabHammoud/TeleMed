@@ -45,6 +45,71 @@ export type Database = {
         }
         Relationships: []
       }
+      community_comments: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string
+          id: string
+          post_id: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string
+          id?: string
+          post_id: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_posts: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string
+          id: string
+          likes: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string
+          id?: string
+          likes?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          likes?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       consultations: {
         Row: {
           created_at: string
@@ -144,6 +209,36 @@ export type Database = {
           },
         ]
       }
+      messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          read: boolean | null
+          receiver_id: string
+          sender_id: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          read?: boolean | null
+          receiver_id: string
+          sender_id: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          read?: boolean | null
+          receiver_id?: string
+          sender_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category: string
@@ -195,6 +290,7 @@ export type Database = {
           last_name: string | null
           medical_license_number: string | null
           phone: string | null
+          role: string | null
           specialty: string | null
           updated_at: string
           years_of_experience: number | null
@@ -213,6 +309,7 @@ export type Database = {
           last_name?: string | null
           medical_license_number?: string | null
           phone?: string | null
+          role?: string | null
           specialty?: string | null
           updated_at?: string
           years_of_experience?: number | null
@@ -231,6 +328,7 @@ export type Database = {
           last_name?: string | null
           medical_license_number?: string | null
           phone?: string | null
+          role?: string | null
           specialty?: string | null
           updated_at?: string
           years_of_experience?: number | null
