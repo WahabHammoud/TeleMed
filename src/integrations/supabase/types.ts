@@ -9,6 +9,42 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      appointments: {
+        Row: {
+          appointment_date: string
+          created_at: string
+          description: string | null
+          doctor_id: string | null
+          id: string
+          patient_id: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          appointment_date: string
+          created_at?: string
+          description?: string | null
+          doctor_id?: string | null
+          id?: string
+          patient_id: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          appointment_date?: string
+          created_at?: string
+          description?: string | null
+          doctor_id?: string | null
+          id?: string
+          patient_id?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       consultations: {
         Row: {
           created_at: string
@@ -107,6 +143,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      products: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          name: string
+          price: number
+          stock: number
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          price: number
+          stock?: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          price?: number
+          stock?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
