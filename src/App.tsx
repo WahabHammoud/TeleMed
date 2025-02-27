@@ -18,6 +18,7 @@ import HelpPage from "./pages/HelpPage";
 import MessagesPage from "./pages/MessagesPage";
 import CommunityPage from "./pages/CommunityPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import NotificationsPage from "./pages/NotificationsPage";
 
 const queryClient = new QueryClient();
 
@@ -116,6 +117,11 @@ const App = () => {
             <Route path="/community" element={
               <ProtectedRoute>
                 <CommunityPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/notifications" element={
+              <ProtectedRoute>
+                <NotificationsPage />
               </ProtectedRoute>
             } />
             <Route path="/admin/*" element={
