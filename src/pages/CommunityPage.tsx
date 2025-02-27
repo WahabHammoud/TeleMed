@@ -17,10 +17,6 @@ interface Post {
   likes: number;
   created_at: string;
   author_id: string;
-  author?: {
-    first_name: string;
-    last_name: string;
-  };
 }
 
 interface Comment {
@@ -28,10 +24,13 @@ interface Comment {
   content: string;
   created_at: string;
   author_id: string;
-  author?: {
-    first_name: string;
-    last_name: string;
-  };
+  post_id: string;
+}
+
+interface Profile {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
 }
 
 export default function CommunityPage() {
@@ -62,14 +61,23 @@ export default function CommunityPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('community_posts')
-        .select(`
-          *,
-          author:profiles(first_name, last_name)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
       
       if (error) throw error;
       return data as Post[];
+    },
+  });
+
+  const { data: profiles } = useQuery({
+    queryKey: ['profiles'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, first_name, last_name');
+      
+      if (error) throw error;
+      return data as Profile[];
     },
   });
 
@@ -80,10 +88,7 @@ export default function CommunityPage() {
       
       const { data, error } = await supabase
         .from('community_comments')
-        .select(`
-          *,
-          author:profiles(first_name, last_name)
-        `)
+        .select('*')
         .eq('post_id', selectedPost.id)
         .order('created_at', { ascending: true });
       
@@ -142,6 +147,12 @@ export default function CommunityPage() {
     refetchComments();
   };
 
+  // Helper function to find author name
+  const getAuthorName = (authorId: string) => {
+    const author = profiles?.find(profile => profile.id === authorId);
+    return author ? `${author.first_name || ''} ${author.last_name || ''}`.trim() : 'Unknown User';
+  };
+
   return (
     <Layout>
       <div className="space-y-6">
@@ -194,7 +205,7 @@ export default function CommunityPage() {
                         </Button>
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        Posted by {post.author?.first_name} {post.author?.last_name}
+                        Posted by {getAuthorName(post.author_id)}
                       </p>
                     </div>
                   </CardContent>
@@ -219,7 +230,7 @@ export default function CommunityPage() {
                         <div key={comment.id} className="border-b pb-4">
                           <p className="mb-2">{comment.content}</p>
                           <p className="text-sm text-muted-foreground">
-                            {comment.author?.first_name} {comment.author?.last_name} •{" "}
+                            {getAuthorName(comment.author_id)} •{" "}
                             {new Date(comment.created_at).toLocaleDateString()}
                           </p>
                         </div>
