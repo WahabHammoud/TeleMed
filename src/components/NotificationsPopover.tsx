@@ -9,15 +9,7 @@ import {
 } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-
-interface Notification {
-  id: string;
-  title: string;
-  message: string;
-  created_at: string;
-  read: boolean;
-  user_id: string;
-}
+import { Notification } from "@/types/notifications";
 
 export const NotificationsPopover = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -38,7 +30,7 @@ export const NotificationsPopover = () => {
           .limit(10);
 
         if (error) throw error;
-        setNotifications(data || []);
+        setNotifications(data as Notification[] || []);
       } catch (error) {
         console.error('Error fetching notifications:', error);
       } finally {
@@ -113,7 +105,7 @@ export const NotificationsPopover = () => {
   const unreadCount = notifications.filter(notification => !notification.read).length;
 
   // Simulate a few test notifications if none exist
-  const demoNotifications = [
+  const demoNotifications: Notification[] = [
     {
       id: '1',
       title: 'Appointment Reminder',

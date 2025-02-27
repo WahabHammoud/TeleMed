@@ -8,16 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Bell, Check, Trash2 } from "lucide-react";
-
-interface Notification {
-  id: string;
-  title: string;
-  message: string;
-  created_at: string;
-  read: boolean;
-  user_id: string;
-  type: string;
-}
+import { Notification } from "@/types/notifications";
 
 export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -63,7 +54,7 @@ export default function NotificationsPage() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setNotifications(data || []);
+      setNotifications(data as Notification[] || []);
     } catch (error) {
       console.error('Error fetching notifications:', error);
       toast({
@@ -199,7 +190,7 @@ export default function NotificationsPage() {
   };
 
   // Generate demo notifications if none exist
-  const demoNotifications = [
+  const demoNotifications: Notification[] = [
     {
       id: '1',
       title: 'Appointment Reminder',
