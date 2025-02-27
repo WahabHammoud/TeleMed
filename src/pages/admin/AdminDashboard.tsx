@@ -1,18 +1,18 @@
 
 import { useEffect, useState } from "react";
-import { useNavigate, Routes, Route, Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
+import { useQuery } from "@tanstack/react-query";
 import { UserManagement } from "./UserManagement";
 import { PostModeration } from "./PostModeration";
 import { AppointmentManagement } from "./AppointmentManagement";
 import { ProductManagement } from "./ProductManagement";
 import { Analytics } from "./Analytics";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
-import { useQuery } from "@tanstack/react-query";
-import { PieChart, BarChart, Users, ShoppingCart, Calendar, MessageSquare } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Users, Calendar, MessageSquare, ShoppingCart } from "lucide-react";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();

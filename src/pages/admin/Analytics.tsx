@@ -20,6 +20,7 @@ import {
   AreaChart
 } from "recharts";
 
+// Sample data - replace with real data from your backend
 const userRegistrationData = [
   { month: "Jan", count: 12 },
   { month: "Feb", count: 19 },
@@ -27,12 +28,6 @@ const userRegistrationData = [
   { month: "Apr", count: 27 },
   { month: "May", count: 42 },
   { month: "Jun", count: 54 },
-  { month: "Jul", count: 62 },
-  { month: "Aug", count: 78 },
-  { month: "Sep", count: 85 },
-  { month: "Oct", count: 105 },
-  { month: "Nov", count: 124 },
-  { month: "Dec", count: 155 },
 ];
 
 const appointmentData = [
@@ -42,12 +37,6 @@ const appointmentData = [
   { month: "Apr", completed: 48, cancelled: 9, pending: 14 },
   { month: "May", completed: 62, cancelled: 8, pending: 20 },
   { month: "Jun", completed: 58, cancelled: 10, pending: 16 },
-  { month: "Jul", completed: 69, cancelled: 12, pending: 22 },
-  { month: "Aug", completed: 73, cancelled: 11, pending: 19 },
-  { month: "Sep", completed: 78, cancelled: 9, pending: 24 },
-  { month: "Oct", completed: 82, cancelled: 14, pending: 28 },
-  { month: "Nov", completed: 91, cancelled: 12, pending: 30 },
-  { month: "Dec", completed: 99, cancelled: 15, pending: 35 },
 ];
 
 const userTypesData = [
@@ -56,41 +45,16 @@ const userTypesData = [
   { name: "Admins", value: 7 },
 ];
 
-const revenueData = [
-  { month: "Jan", revenue: 24500 },
-  { month: "Feb", revenue: 32800 },
-  { month: "Mar", revenue: 41200 },
-  { month: "Apr", revenue: 38700 },
-  { month: "May", revenue: 45600 },
-  { month: "Jun", revenue: 52300 },
-  { month: "Jul", revenue: 58900 },
-  { month: "Aug", revenue: 63400 },
-  { month: "Sep", revenue: 69700 },
-  { month: "Oct", revenue: 72100 },
-  { month: "Nov", revenue: 78600 },
-  { month: "Dec", revenue: 86200 },
-];
-
-const consultationsBySpecialty = [
-  { name: "Cardiology", count: 145 },
-  { name: "Dermatology", count: 132 },
-  { name: "Neurology", count: 98 },
-  { name: "Pediatrics", count: 165 },
-  { name: "Orthopedics", count: 120 },
-  { name: "Psychiatry", count: 110 },
-  { name: "Gynecology", count: 155 },
-];
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#ffc658'];
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
 
 export function Analytics() {
-  const [dateRange, setDateRange] = useState("yearly");
+  const [dateRange, setDateRange] = useState("monthly");
   
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-semibold">Analytics Dashboard</h2>
-        <Tabs defaultValue="yearly" value={dateRange} onValueChange={setDateRange}>
+        <Tabs defaultValue="monthly" value={dateRange} onValueChange={setDateRange}>
           <TabsList>
             <TabsTrigger value="monthly">Monthly</TabsTrigger>
             <TabsTrigger value="quarterly">Quarterly</TabsTrigger>
@@ -147,7 +111,7 @@ export function Analytics() {
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="md:col-span-2">
           <CardHeader>
             <CardTitle>Appointments Statistics</CardTitle>
             <CardDescription>Number of appointments by status</CardDescription>
@@ -163,44 +127,6 @@ export function Analytics() {
                 <Bar dataKey="completed" fill="#4CAF50" />
                 <Bar dataKey="pending" fill="#2196F3" />
                 <Bar dataKey="cancelled" fill="#F44336" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>Revenue</CardTitle>
-            <CardDescription>Monthly revenue in USD</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={revenueData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip formatter={(value) => [`$${value}`, 'Revenue']} />
-                <Legend />
-                <Line type="monotone" dataKey="revenue" stroke="#82ca9d" strokeWidth={2} />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-        
-        <Card className="md:col-span-2">
-          <CardHeader>
-            <CardTitle>Consultations by Specialty</CardTitle>
-            <CardDescription>Number of consultations performed by medical specialty</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={consultationsBySpecialty} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" />
-                <YAxis type="category" dataKey="name" />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="count" fill="#8884d8" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
