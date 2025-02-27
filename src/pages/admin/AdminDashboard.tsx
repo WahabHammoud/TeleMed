@@ -1,8 +1,8 @@
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Routes, Route, Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserManagement } from "./UserManagement";
 import { PostModeration } from "./PostModeration";
@@ -11,56 +11,77 @@ import { ProductManagement } from "./ProductManagement";
 import { Analytics } from "./Analytics";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { useQuery } from "@tanstack/react-query";
 import { PieChart, BarChart, Users, ShoppingCart, Calendar, MessageSquare } from "lucide-react";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("overview");
 
-  useEffect(() => {
-    const checkAdminStatus = async () => {
-      try {
-        setLoading(true);
-        
-        // Check if user is logged in
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-          navigate("/auth");
-          return;
-        }
-        
-        // Check if user has admin role
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', user.id)
-          .single();
-        
-        if (profile?.role !== 'admin') {
-          toast({
-            variant: "destructive",
-            title: "Access Denied",
-            description: "You don't have permission to access the admin dashboard."
-          });
-          navigate("/");
-          return;
-        }
-        
-        setIsAdmin(true);
-      } catch (error) {
-        console.error('Error checking admin status:', error);
-        navigate("/");
-      } finally {
-        setLoading(false);
+  const { data: isAdmin, isLoading } = useQuery({
+    queryKey: ['admin-status'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate("/auth");
+        return false;
       }
-    };
-    
-    checkAdminStatus();
-  }, [navigate, toast]);
+      
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+      
+      if (error || data?.role !== 'admin') {
+        toast({
+          variant: "destructive",
+          title: "Access Denied",
+          description: "You don't have permission to access the admin dashboard."
+        });
+        navigate("/");
+        return false;
+      }
+      
+      return true;
+    },
+  });
 
-  if (loading) {
+  const { data: stats } = useQuery({
+    queryKey: ['admin-stats'],
+    queryFn: async () => {
+      // Get user count
+      const { count: userCount } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true });
+      
+      // Get appointment count
+      const { count: appointmentCount } = await supabase
+        .from('appointments')
+        .select('*', { count: 'exact', head: true });
+      
+      // Get post count
+      const { count: postCount } = await supabase
+        .from('community_posts')
+        .select('*', { count: 'exact', head: true });
+      
+      // Get product count
+      const { count: productCount } = await supabase
+        .from('products')
+        .select('*', { count: 'exact', head: true });
+      
+      return {
+        userCount: userCount || 0,
+        appointmentCount: appointmentCount || 0,
+        postCount: postCount || 0,
+        productCount: productCount || 0
+      };
+    },
+    enabled: !!isAdmin
+  });
+
+  if (isLoading) {
     return (
       <Layout>
         <div className="flex items-center justify-center h-[70vh]">
@@ -74,7 +95,7 @@ export default function AdminDashboard() {
   }
 
   if (!isAdmin) {
-    return null; // Will redirect in useEffect
+    return null; // Will redirect in query function
   }
 
   return (
@@ -87,6 +108,7 @@ export default function AdminDashboard() {
           </p>
         </div>
         
+        {/* Stats Overview */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -94,8 +116,8 @@ export default function AdminDashboard() {
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">+573</div>
-              <p className="text-xs text-muted-foreground">+12% from last month</p>
+              <div className="text-2xl font-bold">{stats?.userCount || "--"}</div>
+              <p className="text-xs text-muted-foreground">Patients and doctors</p>
             </CardContent>
           </Card>
           <Card>
@@ -104,8 +126,8 @@ export default function AdminDashboard() {
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">+248</div>
-              <p className="text-xs text-muted-foreground">+4% from last month</p>
+              <div className="text-2xl font-bold">{stats?.appointmentCount || "--"}</div>
+              <p className="text-xs text-muted-foreground">Total appointments</p>
             </CardContent>
           </Card>
           <Card>
@@ -114,44 +136,50 @@ export default function AdminDashboard() {
               <MessageSquare className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">+1,243</div>
-              <p className="text-xs text-muted-foreground">+19% from last month</p>
+              <div className="text-2xl font-bold">{stats?.postCount || "--"}</div>
+              <p className="text-xs text-muted-foreground">User discussions</p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Product Sales</CardTitle>
+              <CardTitle className="text-sm font-medium">Products</CardTitle>
               <ShoppingCart className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">$16,853</div>
-              <p className="text-xs text-muted-foreground">+6% from last month</p>
+              <div className="text-2xl font-bold">{stats?.productCount || "--"}</div>
+              <p className="text-xs text-muted-foreground">Items in your shop</p>
             </CardContent>
           </Card>
         </div>
 
-        <Tabs defaultValue="users" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="users">Users</TabsTrigger>
-            <TabsTrigger value="posts">Community Posts</TabsTrigger>
-            <TabsTrigger value="appointments">Appointments</TabsTrigger>
-            <TabsTrigger value="products">Products</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        {/* Admin Management Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+          <TabsList className="w-full sm:w-auto grid grid-cols-2 sm:grid-cols-5 h-auto">
+            <TabsTrigger value="overview" className="py-2">Overview</TabsTrigger>
+            <TabsTrigger value="users" className="py-2">Users</TabsTrigger>
+            <TabsTrigger value="posts" className="py-2">Posts</TabsTrigger>
+            <TabsTrigger value="appointments" className="py-2">Appointments</TabsTrigger>
+            <TabsTrigger value="products" className="py-2">Products</TabsTrigger>
           </TabsList>
-          <TabsContent value="users" className="space-y-4">
+          
+          <TabsContent value="overview">
+            <Analytics />
+          </TabsContent>
+          
+          <TabsContent value="users">
             <UserManagement />
           </TabsContent>
-          <TabsContent value="posts" className="space-y-4">
+          
+          <TabsContent value="posts">
             <PostModeration />
           </TabsContent>
-          <TabsContent value="appointments" className="space-y-4">
+          
+          <TabsContent value="appointments">
             <AppointmentManagement />
           </TabsContent>
-          <TabsContent value="products" className="space-y-4">
+          
+          <TabsContent value="products">
             <ProductManagement />
-          </TabsContent>
-          <TabsContent value="analytics" className="space-y-4">
-            <Analytics />
           </TabsContent>
         </Tabs>
       </div>

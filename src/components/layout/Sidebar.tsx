@@ -72,8 +72,8 @@ export const Sidebar = () => {
             <div className="space-y-1">
               <Link
                 to="/appointments"
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-medical-600 ${
-                  location.pathname === "/appointments" ? "bg-slate-100 text-medical-600 font-medium" : "text-gray-500"
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
+                  location.pathname === "/appointments" ? "bg-slate-100 text-primary font-medium" : "text-gray-500"
                 }`}
               >
                 <Calendar className="h-4 w-4" />
@@ -81,8 +81,8 @@ export const Sidebar = () => {
               </Link>
               <Link
                 to="/consultations"
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-medical-600 ${
-                  location.pathname === "/consultations" ? "bg-slate-100 text-medical-600 font-medium" : "text-gray-500"
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
+                  location.pathname === "/consultations" ? "bg-slate-100 text-primary font-medium" : "text-gray-500"
                 }`}
               >
                 <Video className="h-4 w-4" />
@@ -90,8 +90,8 @@ export const Sidebar = () => {
               </Link>
               <Link
                 to="/messages"
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-medical-600 ${
-                  location.pathname === "/messages" ? "bg-slate-100 text-medical-600 font-medium" : "text-gray-500"
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
+                  location.pathname === "/messages" ? "bg-slate-100 text-primary font-medium" : "text-gray-500"
                 }`}
               >
                 <MessageSquare className="h-4 w-4" />
@@ -99,8 +99,8 @@ export const Sidebar = () => {
               </Link>
               <Link
                 to="/community"
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-medical-600 ${
-                  location.pathname === "/community" ? "bg-slate-100 text-medical-600 font-medium" : "text-gray-500"
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
+                  location.pathname === "/community" ? "bg-slate-100 text-primary font-medium" : "text-gray-500"
                 }`}
               >
                 <Users className="h-4 w-4" />
@@ -108,8 +108,8 @@ export const Sidebar = () => {
               </Link>
               <Link
                 to="/documents"
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-medical-600 ${
-                  location.pathname === "/documents" ? "bg-slate-100 text-medical-600 font-medium" : "text-gray-500"
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
+                  location.pathname === "/documents" ? "bg-slate-100 text-primary font-medium" : "text-gray-500"
                 }`}
               >
                 <FileText className="h-4 w-4" />
@@ -117,8 +117,8 @@ export const Sidebar = () => {
               </Link>
               <Link
                 to="/shop"
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-medical-600 ${
-                  location.pathname === "/shop" ? "bg-slate-100 text-medical-600 font-medium" : "text-gray-500"
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
+                  location.pathname === "/shop" ? "bg-slate-100 text-primary font-medium" : "text-gray-500"
                 }`}
               >
                 <ShoppingBag className="h-4 w-4" />
@@ -133,8 +133,8 @@ export const Sidebar = () => {
               <div className="space-y-1">
                 <Link
                   to="/admin"
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-medical-600 ${
-                    location.pathname.startsWith("/admin") ? "bg-slate-100 text-medical-600 font-medium" : "text-gray-500"
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
+                    location.pathname.startsWith("/admin") ? "bg-slate-100 text-primary font-medium" : "text-gray-500"
                   }`}
                 >
                   <LayoutDashboard className="h-4 w-4" />
@@ -149,8 +149,8 @@ export const Sidebar = () => {
             <div className="space-y-1">
               <Link
                 to="/settings"
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-medical-600 ${
-                  location.pathname === "/settings" ? "bg-slate-100 text-medical-600 font-medium" : "text-gray-500"
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
+                  location.pathname === "/settings" ? "bg-slate-100 text-primary font-medium" : "text-gray-500"
                 }`}
               >
                 <Settings className="h-4 w-4" />
@@ -158,8 +158,8 @@ export const Sidebar = () => {
               </Link>
               <Link
                 to="/help"
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-medical-600 ${
-                  location.pathname === "/help" ? "bg-slate-100 text-medical-600 font-medium" : "text-gray-500"
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
+                  location.pathname === "/help" ? "bg-slate-100 text-primary font-medium" : "text-gray-500"
                 }`}
               >
                 <HelpCircle className="h-4 w-4" />
@@ -167,7 +167,7 @@ export const Sidebar = () => {
               </Link>
               <button
                 onClick={handleSignOut}
-                className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-medical-600"
+                className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-primary"
               >
                 <LogOut className="h-4 w-4" />
                 Sign Out

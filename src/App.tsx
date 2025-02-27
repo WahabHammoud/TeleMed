@@ -17,8 +17,8 @@ import SettingsPage from "./pages/SettingsPage";
 import HelpPage from "./pages/HelpPage";
 import MessagesPage from "./pages/MessagesPage";
 import CommunityPage from "./pages/CommunityPage";
-import AdminDashboard from "./pages/admin/AdminDashboard";
 import NotificationsPage from "./pages/NotificationsPage";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +38,13 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     };
     
     checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthenticated(!!session);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   if (loading) {
@@ -49,6 +56,48 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   }
 
   return authenticated ? <>{children}</> : <Navigate to="/auth" replace />;
+};
+
+// Admin route with role check
+const AdminRoute = ({ children }: ProtectedRouteProps) => {
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          setLoading(false);
+          return;
+        }
+        
+        const { data } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+        
+        setIsAdmin(data?.role === 'admin');
+        setLoading(false);
+      } catch (error) {
+        console.error('Error checking admin status:', error);
+        setLoading(false);
+      }
+    };
+    
+    checkAdminStatus();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  return isAdmin ? <>{children}</> : <Navigate to="/" replace />;
 };
 
 const App = () => {
@@ -125,9 +174,9 @@ const App = () => {
               </ProtectedRoute>
             } />
             <Route path="/admin/*" element={
-              <ProtectedRoute>
+              <AdminRoute>
                 <AdminDashboard />
-              </ProtectedRoute>
+              </AdminRoute>
             } />
             <Route path="*" element={<NotFound />} />
           </Routes>
