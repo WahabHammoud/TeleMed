@@ -138,4 +138,82 @@ export function AppointmentManagement() {
               placeholder="Search appointments..."
               className="pl-8 w-[250px]"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <Button variant="outline" size="sm" onClick={fetchAppointments}>
+            <RefreshCw className="h-4 w-4" />
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {loading ? (
+          <div className="flex justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Title</TableHead>
+                <TableHead>Patient</TableHead>
+                <TableHead>Doctor</TableHead>
+                <TableHead>Date & Time</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredAppointments.map((appointment) => (
+                <TableRow key={appointment.id}>
+                  <TableCell className="font-medium">
+                    {appointment.title}
+                  </TableCell>
+                  <TableCell>
+                    {getProfileName(appointment.patient_id)}
+                  </TableCell>
+                  <TableCell>
+                    {appointment.doctor_id 
+                      ? `Dr. ${getProfileName(appointment.doctor_id)}`
+                      : 'Unassigned'}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-col">
+                      <span>{new Date(appointment.appointment_date).toLocaleDateString()}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(appointment.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell>{getStatusBadge(appointment.status)}</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        className="text-green-600"
+                        onClick={() => handleUpdateStatus(appointment.id, 'confirmed')}
+                        disabled={appointment.status !== 'pending'}
+                      >
+                        <Check className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        className="text-red-600"
+                        onClick={() => handleUpdateStatus(appointment.id, 'cancelled')}
+                        disabled={appointment.status === 'cancelled' || appointment.status === 'completed'}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
