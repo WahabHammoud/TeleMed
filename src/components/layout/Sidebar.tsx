@@ -141,4 +141,41 @@ export const Sidebar = () => {
                   Admin Dashboard
                 </Link>
               </div>
-            
+            </div>
+          )}
+          
+          <div className="px-3 py-2">
+            <h2 className="mb-2 px-4 text-lg font-semibold">Settings</h2>
+            <div className="space-y-1">
+              <Link
+                to="/settings"
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-medical-600 ${
+                  location.pathname === "/settings" ? "bg-slate-100 text-medical-600 font-medium" : "text-gray-500"
+                }`}
+              >
+                <Settings className="h-4 w-4" />
+                Settings
+              </Link>
+              <Link
+                to="/help"
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-medical-600 ${
+                  location.pathname === "/help" ? "bg-slate-100 text-medical-600 font-medium" : "text-gray-500"
+                }`}
+              >
+                <HelpCircle className="h-4 w-4" />
+                Help & Support
+              </Link>
+              <button
+                onClick={handleSignOut}
+                className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-medical-600"
+              >
+                <LogOut className="h-4 w-4" />
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </aside>
+  );
+};
