@@ -58,7 +58,7 @@ export default function AuthPage() {
     try {
       // Sign up the admin user
       const { error: signUpError } = await supabase.auth.signUp({
-        email: "wahab.hammou2002@gmail.com",
+        email: "wahab.hammoud2002@gmail.com",
         password: "admin123",
         options: {
           data: {
@@ -134,7 +134,7 @@ export default function AuthPage() {
           first_name: firstName,
           last_name: lastName,
           is_doctor: userType === 'doctor',
-          role: 'user'
+          role: userType // This will now use the enum type 'doctor' or 'patient'
         });
 
       if (profileError) throw profileError;
@@ -184,7 +184,7 @@ export default function AuthPage() {
   // Create admin user automatically if it doesn't exist
   useEffect(() => {
     const checkAndCreateAdmin = async () => {
-      // Check if admin@gmail.com exists
+      // Check if admin exists
       const { data } = await supabase
         .from('profiles')
         .select('id')

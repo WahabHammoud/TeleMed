@@ -320,7 +320,7 @@ export type Database = {
           last_name: string | null
           medical_license_number: string | null
           phone: string | null
-          role: string | null
+          role: Database["public"]["Enums"]["user_role"] | null
           specialty: string | null
           updated_at: string
           years_of_experience: number | null
@@ -339,7 +339,7 @@ export type Database = {
           last_name?: string | null
           medical_license_number?: string | null
           phone?: string | null
-          role?: string | null
+          role?: Database["public"]["Enums"]["user_role"] | null
           specialty?: string | null
           updated_at?: string
           years_of_experience?: number | null
@@ -358,7 +358,7 @@ export type Database = {
           last_name?: string | null
           medical_license_number?: string | null
           phone?: string | null
-          role?: string | null
+          role?: Database["public"]["Enums"]["user_role"] | null
           specialty?: string | null
           updated_at?: string
           years_of_experience?: number | null
@@ -373,7 +373,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      user_role: "admin" | "doctor" | "patient"
     }
     CompositeTypes: {
       [_ in never]: never
