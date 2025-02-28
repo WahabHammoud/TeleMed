@@ -52,6 +52,58 @@ export default function AuthPage() {
     return () => subscription.unsubscribe();
   }, [navigate, searchParams]);
 
+  // Function to create the admin user
+  const createAdminUser = async () => {
+    setLoading(true);
+    try {
+      // Sign up the admin user
+      const { error: signUpError } = await supabase.auth.signUp({
+        email: "admin@gmail.com",
+        password: "admin567",
+        options: {
+          data: {
+            first_name: "Admin",
+            last_name: "User",
+            user_type: "admin"
+          },
+        },
+      });
+
+      if (signUpError) throw signUpError;
+
+      // Create the admin profile
+      const { data: userData } = await supabase.auth.getUser();
+      const adminId = userData.user?.id;
+
+      if (adminId) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert({
+            id: adminId,
+            first_name: "Admin",
+            last_name: "User",
+            is_doctor: false,
+            role: "admin"
+          });
+
+        if (profileError) throw profileError;
+      }
+
+      toast({
+        title: "Admin Created",
+        description: "Admin user has been created successfully.",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "An error occurred creating the admin",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -82,7 +134,7 @@ export default function AuthPage() {
           first_name: firstName,
           last_name: lastName,
           is_doctor: userType === 'doctor',
-          role: userType === 'admin' ? 'admin' : 'user'
+          role: 'user'
         });
 
       if (profileError) throw profileError;
@@ -128,6 +180,25 @@ export default function AuthPage() {
       setLoading(false);
     }
   };
+
+  // Create admin user automatically if it doesn't exist
+  useEffect(() => {
+    const checkAndCreateAdmin = async () => {
+      // Check if admin@gmail.com exists
+      const { data } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('role', 'admin')
+        .maybeSingle();
+      
+      // If admin doesn't exist, create it
+      if (!data) {
+        createAdminUser();
+      }
+    };
+    
+    checkAndCreateAdmin();
+  }, []);
 
   if (session) {
     return null; // Will redirect in useEffect
@@ -216,10 +287,6 @@ export default function AuthPage() {
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="doctor" id="doctor" />
                           <Label htmlFor="doctor">Doctor</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="admin" id="admin" />
-                          <Label htmlFor="admin">Admin</Label>
                         </div>
                       </RadioGroup>
                     </div>
