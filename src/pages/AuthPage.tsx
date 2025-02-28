@@ -58,8 +58,8 @@ export default function AuthPage() {
     try {
       // Sign up the admin user
       const { error: signUpError } = await supabase.auth.signUp({
-        email: "admin@gmail.com",
-        password: "admin567",
+        email: "wahab.hammou2002@gmail.com",
+        password: "admin123",
         options: {
           data: {
             first_name: "Admin",
