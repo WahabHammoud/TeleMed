@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -14,6 +16,7 @@ export default function AuthPage() {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [userType, setUserType] = useState("patient");
   const [loading, setLoading] = useState(false);
   const [session, setSession] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("signin");
@@ -64,11 +67,25 @@ export default function AuthPage() {
           data: {
             first_name: firstName,
             last_name: lastName,
+            user_type: userType
           },
         },
       });
 
       if (error) throw error;
+
+      // Create the profile with appropriate settings
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert({
+          id: (await supabase.auth.getUser()).data.user?.id,
+          first_name: firstName,
+          last_name: lastName,
+          is_doctor: userType === 'doctor',
+          role: userType === 'admin' ? 'admin' : 'user'
+        });
+
+      if (profileError) throw profileError;
 
       toast({
         title: "Success!",
@@ -188,6 +205,25 @@ export default function AuthPage() {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                     />
+                    
+                    <div className="space-y-2">
+                      <Label>I am a:</Label>
+                      <RadioGroup value={userType} onValueChange={setUserType} className="flex space-x-4">
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="patient" id="patient" />
+                          <Label htmlFor="patient">Patient</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="doctor" id="doctor" />
+                          <Label htmlFor="doctor">Doctor</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="admin" id="admin" />
+                          <Label htmlFor="admin">Admin</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+                    
                     <Button type="submit" className="w-full" disabled={loading}>
                       {loading ? "Creating account..." : "Create Account"}
                     </Button>
