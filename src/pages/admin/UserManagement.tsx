@@ -16,6 +16,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Search, RefreshCw } from "lucide-react";
+import { Database } from "@/integrations/supabase/types";
+
+type UserRole = Database["public"]["Enums"]["user_role"];
 
 interface Profile {
   id: string;
@@ -23,7 +26,7 @@ interface Profile {
   last_name: string | null;
   email?: string;
   is_doctor: boolean | null;
-  role: string | null;
+  role: UserRole | null;
   created_at: string;
 }
 
@@ -60,9 +63,11 @@ export function UserManagement() {
 
   const handleUpdateRole = async (userId: string, isAdmin: boolean) => {
     try {
+      const newRole: UserRole = isAdmin ? 'admin' : 'patient';
+      
       const { error } = await supabase
         .from('profiles')
-        .update({ role: isAdmin ? 'admin' : 'user' })
+        .update({ role: newRole })
         .eq('id', userId);
       
       if (error) throw error;
@@ -85,9 +90,32 @@ export function UserManagement() {
 
   const handleUpdateDoctorStatus = async (userId: string, isDoctor: boolean) => {
     try {
+      const updates: {
+        is_doctor: boolean;
+        role?: UserRole;
+      } = {
+        is_doctor: isDoctor
+      };
+      
+      // If toggling doctor status, also update the role if needed
+      if (isDoctor) {
+        updates.role = 'doctor';
+      } else {
+        // Get current profile to check if it's a doctor
+        const { data } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', userId)
+          .single();
+          
+        if (data?.role === 'doctor') {
+          updates.role = 'patient';
+        }
+      }
+      
       const { error } = await supabase
         .from('profiles')
-        .update({ is_doctor: isDoctor })
+        .update(updates)
         .eq('id', userId);
       
       if (error) throw error;

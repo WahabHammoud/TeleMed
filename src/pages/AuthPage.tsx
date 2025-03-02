@@ -10,13 +10,16 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { Database } from "@/integrations/supabase/types";
+
+type UserRole = Database["public"]["Enums"]["user_role"];
 
 export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [userType, setUserType] = useState("patient");
+  const [userType, setUserType] = useState<UserRole>("patient");
   const [loading, setLoading] = useState(false);
   const [session, setSession] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("signin");
@@ -64,7 +67,7 @@ export default function AuthPage() {
           data: {
             first_name: "Admin",
             last_name: "User",
-            user_type: "admin"
+            user_type: "admin" as UserRole
           },
         },
       });
@@ -83,7 +86,7 @@ export default function AuthPage() {
             first_name: "Admin",
             last_name: "User",
             is_doctor: false,
-            role: "admin"
+            role: "admin" as UserRole
           });
 
         if (profileError) throw profileError;
