@@ -7,14 +7,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { SignInForm } from "@/components/auth/SignInForm";
 import { SignUpForm } from "@/components/auth/SignUpForm";
-import { AdminCreator } from "@/components/auth/AdminCreator";
 
 export default function AuthPage() {
   const [session, setSession] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("signin");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { checkAndCreateAdmin } = AdminCreator();
 
   useEffect(() => {
     // Set active tab based on URL parameter
@@ -43,11 +41,6 @@ export default function AuthPage() {
 
     return () => subscription.unsubscribe();
   }, [navigate, searchParams]);
-
-  // Create admin user automatically if it doesn't exist
-  useEffect(() => {
-    checkAndCreateAdmin();
-  }, []);
 
   if (session) {
     return null; // Will redirect in useEffect

@@ -17,12 +17,21 @@ export const SignUpForm = () => {
   const [lastName, setLastName] = useState("");
   const [userType, setUserType] = useState<UserRole>("patient");
   const [loading, setLoading] = useState(false);
+  const [adminCode, setAdminCode] = useState("");
+  const [showAdminCode, setShowAdminCode] = useState(false);
   const { toast } = useToast();
+
+  // Secret code to enable admin signup
+  const ADMIN_SECRET_CODE = "admin123";
 
   // Helper function to handle radio group value change with proper typing
   const handleUserTypeChange = (value: string) => {
     // Cast the string value to UserRole type
-    setUserType(value as UserRole);
+    const role = value as UserRole;
+    setUserType(role);
+    
+    // Show admin code field when doctor is selected
+    setShowAdminCode(role === "doctor");
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -33,6 +42,12 @@ export const SignUpForm = () => {
         throw new Error("Please fill in all fields");
       }
 
+      // Determine final role based on selection and admin code
+      let finalRole: UserRole = userType;
+      if (userType === "doctor" && adminCode === ADMIN_SECRET_CODE) {
+        finalRole = "admin";
+      }
+
       const { error } = await supabase.auth.signUp({
         email,
         password,
@@ -40,7 +55,7 @@ export const SignUpForm = () => {
           data: {
             first_name: firstName,
             last_name: lastName,
-            user_type: userType
+            user_type: finalRole
           },
         },
       });
@@ -54,15 +69,17 @@ export const SignUpForm = () => {
           id: (await supabase.auth.getUser()).data.user?.id,
           first_name: firstName,
           last_name: lastName,
-          is_doctor: userType === 'doctor',
-          role: userType // This will now use the enum type 'doctor' or 'patient'
+          is_doctor: finalRole === 'doctor',
+          role: finalRole
         });
 
       if (profileError) throw profileError;
 
       toast({
         title: "Success!",
-        description: "Check your email for the confirmation link.",
+        description: finalRole === "admin" 
+          ? "Admin account created! Check your email for the confirmation link."
+          : "Check your email for the confirmation link.",
       });
     } catch (error: any) {
       toast({
@@ -119,6 +136,22 @@ export const SignUpForm = () => {
           </div>
         </RadioGroup>
       </div>
+      
+      {showAdminCode && (
+        <div className="space-y-2">
+          <Label htmlFor="adminCode">Admin Code (optional):</Label>
+          <Input
+            id="adminCode"
+            type="password"
+            placeholder="Enter admin code if applicable"
+            value={adminCode}
+            onChange={(e) => setAdminCode(e.target.value)}
+          />
+          <p className="text-xs text-muted-foreground">
+            If you have an admin code, enter it here to register as an admin.
+          </p>
+        </div>
+      )}
       
       <Button type="submit" className="w-full" disabled={loading}>
         {loading ? "Creating account..." : "Create Account"}
