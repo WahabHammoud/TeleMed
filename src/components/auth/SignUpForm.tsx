@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -66,8 +67,22 @@ export const SignUpForm = () => {
 
       if (!data.user) throw new Error("User creation failed");
 
-      // Create profile - we need to use service role or turn off RLS temporarily to do this
-      // This is now handled by a trigger function on the Supabase side
+      // Manually insert the profile record to ensure the role is set correctly
+      // This is needed because the trigger might not be set properly
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: data.user.id,
+          first_name: firstName,
+          last_name: lastName,
+          role: finalRole
+        });
+
+      if (profileError) {
+        console.error("Profile creation error:", profileError);
+        // Continue anyway since the auth was successful
+      }
+
       toast({
         title: "Success!",
         description: finalRole === "admin" 

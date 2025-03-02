@@ -35,10 +35,42 @@ export const Sidebar = () => {
           .eq('id', user.id)
           .single();
         
-        if (error) throw error;
+        if (error) {
+          console.error('Error fetching profile:', error);
+          
+          // Try to determine role from user metadata as fallback
+          const { data: authUser } = await supabase.auth.getUser();
+          const metadata = authUser.user?.user_metadata;
+          if (metadata && metadata.user_role) {
+            setUserProfile({ 
+              role: metadata.user_role,
+              first_name: metadata.first_name,
+              last_name: metadata.last_name
+            });
+            
+            // Also try to fix the profile
+            const { error: upsertError } = await supabase
+              .from('profiles')
+              .upsert({
+                id: user.id,
+                role: metadata.user_role,
+                first_name: metadata.first_name,
+                last_name: metadata.last_name
+              });
+              
+            if (upsertError) {
+              console.error('Error creating profile from metadata:', upsertError);
+            }
+          }
+          return;
+        }
+        
         setUserProfile(data);
+        
+        // Log to help with debugging
+        console.log('User profile loaded:', data);
       } catch (error) {
-        console.error('Error fetching profile:', error);
+        console.error('Error in profile fetching:', error);
       }
     };
     
@@ -62,6 +94,14 @@ export const Sidebar = () => {
       });
     }
   };
+
+  const isAdmin = userProfile?.role === 'admin';
+  
+  // Add debug info to console
+  useEffect(() => {
+    console.log('Current user role:', userProfile?.role);
+    console.log('Is admin?', isAdmin);
+  }, [userProfile, isAdmin]);
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-white border-r hidden lg:block pt-20">
@@ -127,7 +167,7 @@ export const Sidebar = () => {
             </div>
           </div>
           
-          {userProfile?.role === 'admin' && (
+          {isAdmin && (
             <div className="px-3 py-2">
               <h2 className="mb-2 px-4 text-lg font-semibold">Admin</h2>
               <div className="space-y-1">

@@ -30,10 +30,43 @@ export default function Index({ session }: IndexProps) {
           .eq('id', session.user.id)
           .single();
 
-        if (error) throw error;
-        setUserProfile(data);
+        if (error) {
+          console.error('Error fetching profile:', error);
+          
+          // Try to create profile from metadata as fallback
+          const metadata = session.user.user_metadata;
+          if (metadata) {
+            const userRole = metadata.user_role || 'patient';
+            
+            const newProfile = {
+              id: session.user.id,
+              first_name: metadata.first_name,
+              last_name: metadata.last_name,
+              role: userRole
+            };
+            
+            const { error: upsertError, data: profileData } = await supabase
+              .from('profiles')
+              .upsert(newProfile)
+              .select()
+              .single();
+            
+            if (!upsertError && profileData) {
+              setUserProfile(profileData);
+            } else {
+              console.error('Error creating profile:', upsertError);
+              // Use metadata as profile
+              setUserProfile({
+                ...newProfile,
+                // Add any other needed fields with defaults
+              });
+            }
+          }
+        } else {
+          setUserProfile(data);
+        }
       } catch (error) {
-        console.error('Error fetching profile:', error);
+        console.error('Error in profile fetching:', error);
       } finally {
         setLoading(false);
       }
@@ -50,6 +83,16 @@ export default function Index({ session }: IndexProps) {
       console.error('Error signing out:', error);
     }
   };
+
+  const isAdmin = userProfile?.role === 'admin';
+  
+  // Debug
+  useEffect(() => {
+    if (userProfile) {
+      console.log('Home page - User profile:', userProfile);
+      console.log('Home page - Is admin?', isAdmin);
+    }
+  }, [userProfile, isAdmin]);
 
   const features = [
     {
@@ -112,7 +155,7 @@ export default function Index({ session }: IndexProps) {
             </Button>
           ) : (
             <div className="flex items-center gap-4">
-              {userProfile?.role === 'admin' && (
+              {isAdmin && (
                 <Button variant="outline" asChild>
                   <Link to="/admin">
                     <LayoutDashboard className="mr-2 h-4 w-4" />
@@ -139,6 +182,15 @@ export default function Index({ session }: IndexProps) {
                   Welcome to your healthcare dashboard. Here you can manage your appointments, 
                   consult with doctors, access your medical documents, and more.
                 </p>
+                {isAdmin && (
+                  <div className="mt-4">
+                    <Button asChild>
+                      <Link to="/admin">
+                        Go to Admin Dashboard
+                      </Link>
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
 
