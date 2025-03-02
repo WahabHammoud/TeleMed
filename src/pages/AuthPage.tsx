@@ -207,6 +207,12 @@ export default function AuthPage() {
     return null; // Will redirect in useEffect
   }
 
+  // Helper function to handle radio group value change with proper typing
+  const handleUserTypeChange = (value: string) => {
+    // Cast the string value to UserRole type
+    setUserType(value as UserRole);
+  };
+
   return (
     <Layout>
       <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
@@ -282,7 +288,7 @@ export default function AuthPage() {
                     
                     <div className="space-y-2">
                       <Label>I am a:</Label>
-                      <RadioGroup value={userType} onValueChange={setUserType} className="flex space-x-4">
+                      <RadioGroup value={userType} onValueChange={handleUserTypeChange} className="flex space-x-4">
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="patient" id="patient" />
                           <Label htmlFor="patient">Patient</Label>
