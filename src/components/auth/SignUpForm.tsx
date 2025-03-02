@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,6 +36,7 @@ export const SignUpForm = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    
     try {
       if (!email || !password || !firstName || !lastName) {
         throw new Error("Please fill in all fields");
@@ -44,42 +44,35 @@ export const SignUpForm = () => {
 
       // Determine final role based on selection and admin code
       let finalRole: UserRole = userType;
+      
       if (userType === "doctor" && adminCode === ADMIN_SECRET_CODE) {
         finalRole = "admin";
       }
 
-      const { error } = await supabase.auth.signUp({
+      // Sign up the user with their profile data in metadata
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             first_name: firstName,
             last_name: lastName,
-            user_type: finalRole
+            user_role: finalRole
           },
         },
       });
 
       if (error) throw error;
 
-      // Create the profile with appropriate settings
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: (await supabase.auth.getUser()).data.user?.id,
-          first_name: firstName,
-          last_name: lastName,
-          is_doctor: finalRole === 'doctor',
-          role: finalRole
-        });
+      if (!data.user) throw new Error("User creation failed");
 
-      if (profileError) throw profileError;
-
+      // Create profile - we need to use service role or turn off RLS temporarily to do this
+      // This is now handled by a trigger function on the Supabase side
       toast({
         title: "Success!",
         description: finalRole === "admin" 
           ? "Admin account created! Check your email for the confirmation link."
-          : "Check your email for the confirmation link.",
+          : "Account created! Check your email for the confirmation link.",
       });
     } catch (error: any) {
       toast({
