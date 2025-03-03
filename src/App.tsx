@@ -20,6 +20,13 @@ import HelpPage from "@/pages/HelpPage";
 import NotificationsPage from "@/pages/NotificationsPage";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 
+// Nouvelles pages
+import HomePage from "@/pages/HomePage";
+import EmergencyPage from "@/pages/EmergencyPage";
+import EventsPage from "@/pages/EventsPage";
+import HomeVisitsPage from "@/pages/HomeVisitsPage";
+import ComplaintsPage from "@/pages/ComplaintsPage";
+
 // Initialize the React Query client
 const queryClient = new QueryClient();
 
@@ -48,6 +55,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Index session={session} />} />
           <Route path="/auth" element={<AuthPage />} />
+          <Route path="/home" element={<HomePage />} />
           <Route path="/appointments" element={<AppointmentsPage />} />
           <Route path="/consultations" element={<ConsultationsPage />} />
           <Route path="/messages" element={<MessagesPage />} />
@@ -58,6 +66,13 @@ function App() {
           <Route path="/help" element={<HelpPage />} />
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          
+          {/* Nouvelles routes */}
+          <Route path="/emergency" element={<EmergencyPage />} />
+          <Route path="/events" element={<EventsPage />} />
+          <Route path="/home-visits" element={<HomeVisitsPage />} />
+          <Route path="/complaints" element={<ComplaintsPage />} />
+          
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Toaster />

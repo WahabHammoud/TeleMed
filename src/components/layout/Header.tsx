@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, ShoppingCart, User } from "lucide-react";
+import { Menu, ShoppingCart, User, Ambulance, Users, Heart, Home } from "lucide-react";
 import { NotificationsPopover } from "@/components/NotificationsPopover";
 import {
   DropdownMenu,
@@ -69,23 +69,37 @@ export const Header = () => {
             <Button variant="ghost" size="icon" className="lg:hidden">
               <Menu className="h-6 w-6" />
             </Button>
-            <Link to="/" className="text-2xl font-bold text-medical-600">
-              TeleMed
+            <Link to="/" className="flex items-center">
+              <img src="/mediconnect-logo.png" alt="MediConnect Logo" className="h-9 mr-2" />
+              <span className="text-xl font-bold text-medical-600">MediConnect</span>
             </Link>
           </div>
           
-          <nav className="hidden lg:flex items-center space-x-8">
+          <nav className="hidden lg:flex items-center space-x-6">
+            <Link to="/home" className="text-gray-600 hover:text-medical-600 transition-colors">
+              <Home className="h-4 w-4 inline-block mr-1" />
+              Accueil
+            </Link>
             <Link to="/appointments" className="text-gray-600 hover:text-medical-600 transition-colors">
-              Appointments
+              Rendez-vous
             </Link>
             <Link to="/consultations" className="text-gray-600 hover:text-medical-600 transition-colors">
               Consultations
             </Link>
-            <Link to="/community" className="text-gray-600 hover:text-medical-600 transition-colors">
-              Community
+            <Link to="/emergency" className="text-gray-600 hover:text-medical-600 transition-colors">
+              <Ambulance className="h-4 w-4 inline-block mr-1" />
+              Urgences
             </Link>
-            <Link to="/shop" className="text-gray-600 hover:text-medical-600 transition-colors">
-              Shop
+            <Link to="/events" className="text-gray-600 hover:text-medical-600 transition-colors">
+              <Users className="h-4 w-4 inline-block mr-1" />
+              Événements
+            </Link>
+            <Link to="/home-visits" className="text-gray-600 hover:text-medical-600 transition-colors">
+              <Heart className="h-4 w-4 inline-block mr-1" />
+              Visites à domicile
+            </Link>
+            <Link to="/community" className="text-gray-600 hover:text-medical-600 transition-colors">
+              Communauté
             </Link>
           </nav>
 
@@ -103,22 +117,25 @@ export const Header = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuLabel>Mon compte</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link to="/settings">Settings</Link>
+                  <Link to="/settings">Paramètres</Link>
                 </DropdownMenuItem>
                 {userProfile?.role === 'admin' && (
                   <DropdownMenuItem asChild>
-                    <Link to="/admin">Admin Dashboard</Link>
+                    <Link to="/admin">Dashboard Admin</Link>
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem asChild>
-                  <Link to="/help">Help & Support</Link>
+                  <Link to="/help">Aide & Support</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/complaints">Réclamations</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>
-                  Sign Out
+                  Déconnexion
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

@@ -11,7 +11,11 @@ import {
   Settings,
   HelpCircle,
   LogOut,
-  LayoutDashboard
+  LayoutDashboard,
+  Ambulance,
+  Heart,
+  Home,
+  AlertTriangle
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -108,8 +112,27 @@ export const Sidebar = () => {
       <nav className="p-4">
         <div className="space-y-4">
           <div className="px-3 py-2">
-            <h2 className="mb-2 px-4 text-lg font-semibold">Dashboard</h2>
+            <div className="mb-4 px-4">
+              <img 
+                src="/mediconnect-logo.png" 
+                alt="MediConnect Logo"
+                className="h-10 mx-auto mb-2"
+              />
+              <div className="text-center text-xs text-muted-foreground">
+                Votre santé, notre priorité
+              </div>
+            </div>
+            <h2 className="mb-2 px-4 text-lg font-semibold">Services</h2>
             <div className="space-y-1">
+              <Link
+                to="/home"
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
+                  location.pathname === "/home" ? "bg-slate-100 text-primary font-medium" : "text-gray-500"
+                }`}
+              >
+                <Home className="h-4 w-4" />
+                Accueil
+              </Link>
               <Link
                 to="/appointments"
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
@@ -117,7 +140,7 @@ export const Sidebar = () => {
                 }`}
               >
                 <Calendar className="h-4 w-4" />
-                Appointments
+                Rendez-vous
               </Link>
               <Link
                 to="/consultations"
@@ -127,6 +150,33 @@ export const Sidebar = () => {
               >
                 <Video className="h-4 w-4" />
                 Consultations
+              </Link>
+              <Link
+                to="/emergency"
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
+                  location.pathname === "/emergency" ? "bg-slate-100 text-primary font-medium" : "text-gray-500"
+                }`}
+              >
+                <Ambulance className="h-4 w-4" />
+                Service d'urgence
+              </Link>
+              <Link
+                to="/events"
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
+                  location.pathname === "/events" ? "bg-slate-100 text-primary font-medium" : "text-gray-500"
+                }`}
+              >
+                <Users className="h-4 w-4" />
+                Services pour événements
+              </Link>
+              <Link
+                to="/home-visits"
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
+                  location.pathname === "/home-visits" ? "bg-slate-100 text-primary font-medium" : "text-gray-500"
+                }`}
+              >
+                <Heart className="h-4 w-4" />
+                Médecins à domicile
               </Link>
               <Link
                 to="/messages"
@@ -144,7 +194,7 @@ export const Sidebar = () => {
                 }`}
               >
                 <Users className="h-4 w-4" />
-                Community
+                Communauté
               </Link>
               <Link
                 to="/documents"
@@ -162,14 +212,14 @@ export const Sidebar = () => {
                 }`}
               >
                 <ShoppingBag className="h-4 w-4" />
-                Shop
+                Boutique
               </Link>
             </div>
           </div>
           
           {isAdmin && (
             <div className="px-3 py-2">
-              <h2 className="mb-2 px-4 text-lg font-semibold">Admin</h2>
+              <h2 className="mb-2 px-4 text-lg font-semibold">Administration</h2>
               <div className="space-y-1">
                 <Link
                   to="/admin"
@@ -185,7 +235,7 @@ export const Sidebar = () => {
           )}
           
           <div className="px-3 py-2">
-            <h2 className="mb-2 px-4 text-lg font-semibold">Settings</h2>
+            <h2 className="mb-2 px-4 text-lg font-semibold">Support</h2>
             <div className="space-y-1">
               <Link
                 to="/settings"
@@ -194,7 +244,7 @@ export const Sidebar = () => {
                 }`}
               >
                 <Settings className="h-4 w-4" />
-                Settings
+                Paramètres
               </Link>
               <Link
                 to="/help"
@@ -203,14 +253,23 @@ export const Sidebar = () => {
                 }`}
               >
                 <HelpCircle className="h-4 w-4" />
-                Help & Support
+                Aide & Support
+              </Link>
+              <Link
+                to="/complaints"
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
+                  location.pathname === "/complaints" ? "bg-slate-100 text-primary font-medium" : "text-gray-500"
+                }`}
+              >
+                <AlertTriangle className="h-4 w-4" />
+                Réclamations
               </Link>
               <button
                 onClick={handleSignOut}
                 className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-primary"
               >
                 <LogOut className="h-4 w-4" />
-                Sign Out
+                Déconnexion
               </button>
             </div>
           </div>
