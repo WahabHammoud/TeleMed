@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { Ambulance, Users, Heart, Home } from "lucide-react";
+import { Ambulance, Users, Heart, Home, ShoppingBag } from "lucide-react";
 
 export const NavigationLinks: React.FC = () => {
   return (
@@ -27,6 +27,10 @@ export const NavigationLinks: React.FC = () => {
       <Link to="/home-visits" className="text-gray-600 hover:text-medical-600 transition-colors">
         <Heart className="h-4 w-4 inline-block mr-1" />
         Visites à domicile
+      </Link>
+      <Link to="/shop" className="text-gray-600 hover:text-medical-600 transition-colors">
+        <ShoppingBag className="h-4 w-4 inline-block mr-1" />
+        Boutique
       </Link>
       <Link to="/community" className="text-gray-600 hover:text-medical-600 transition-colors">
         Communauté
