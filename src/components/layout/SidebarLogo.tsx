@@ -5,7 +5,7 @@ export const SidebarLogo: React.FC = () => {
   return (
     <div className="mb-4 px-4">
       <img 
-        src="/lovable-uploads/0db0dd53-2d90-4ed9-b30e-242032a996cd.png" 
+        src="/lovable-uploads/c79774e7-7a2b-43c3-9e02-9fc02dc14e5b.png" 
         alt="MediConnect Logo"
         className="h-10 mx-auto mb-2"
       />

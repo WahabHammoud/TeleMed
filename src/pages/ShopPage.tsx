@@ -6,9 +6,10 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { ShoppingCart, Package, Filter } from "lucide-react";
+import { ShoppingCart, Package, Filter, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 
 interface Product {
   id: string;
@@ -23,6 +24,7 @@ interface Product {
 export default function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const { toast } = useToast();
+  const [cartItems, setCartItems] = useState<string[]>([]);
 
   const { data: products, isLoading } = useQuery({
     queryKey: ['products'],
@@ -45,6 +47,14 @@ export default function ShopPage() {
     },
   });
 
+  const addToCart = (productId: string) => {
+    setCartItems([...cartItems, productId]);
+    toast({
+      title: "Added to cart",
+      description: "The product has been added to your cart",
+    });
+  };
+
   const categories = products 
     ? ['all', ...new Set(products.map(product => product.category))]
     : ['all'];
@@ -63,9 +73,11 @@ export default function ShopPage() {
               Browse our selection of high-quality health and wellness products
             </p>
           </div>
-          <Button variant="outline" className="flex items-center gap-2">
-            <ShoppingCart className="h-4 w-4" />
-            Cart (0)
+          <Button asChild variant="outline" className="flex items-center gap-2">
+            <Link to="/shop/cart">
+              <ShoppingCart className="h-4 w-4" />
+              Cart ({cartItems.length})
+            </Link>
           </Button>
         </div>
 
@@ -128,7 +140,13 @@ export default function ShopPage() {
                         <span className="text-sm text-muted-foreground">
                           In stock: {product.stock}
                         </span>
-                        <Button size="sm">Add to Cart</Button>
+                        <Button 
+                          size="sm" 
+                          onClick={() => addToCart(product.id)}
+                          disabled={product.stock === 0}
+                        >
+                          {product.stock === 0 ? "Out of stock" : "Add to Cart"}
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>

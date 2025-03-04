@@ -15,6 +15,7 @@ import MessagesPage from "@/pages/MessagesPage";
 import CommunityPage from "@/pages/CommunityPage";
 import DocumentsPage from "@/pages/DocumentsPage";
 import ShopPage from "@/pages/ShopPage";
+import ShoppingCartPage from "@/pages/ShoppingCartPage";
 import SettingsPage from "@/pages/SettingsPage";
 import HelpPage from "@/pages/HelpPage";
 import NotificationsPage from "@/pages/NotificationsPage";
@@ -62,6 +63,7 @@ function App() {
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/documents" element={<DocumentsPage />} />
           <Route path="/shop" element={<ShopPage />} />
+          <Route path="/shop/cart" element={<ShoppingCartPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/help" element={<HelpPage />} />
           <Route path="/notifications" element={<NotificationsPage />} />
