@@ -1,28 +1,49 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { SidebarLogo } from "./SidebarLogo";
 import { SidebarServices } from "./SidebarServices";
 import { SidebarAdmin } from "./SidebarAdmin";
 import { SidebarSupport } from "./SidebarSupport";
 import { useSidebarProfile } from "@/hooks/useSidebarProfile";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const Sidebar = () => {
   const { isAdmin, handleSignOut } = useSidebarProfile();
+  const [collapsed, setCollapsed] = useState(false);
   
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-white border-r hidden lg:block pt-20">
-      <nav className="p-4">
-        <div className="space-y-4">
-          <div className="px-3 py-2">
-            <SidebarLogo />
-            <SidebarServices />
+    <aside className={cn(
+      "fixed left-0 top-0 h-screen bg-white border-r hidden lg:flex flex-col transition-all duration-300 z-40",
+      collapsed ? "w-20" : "w-64"
+    )}>
+      <div className="h-20 flex items-center justify-between border-b px-4">
+        {!collapsed && <SidebarLogo />}
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => setCollapsed(!collapsed)}
+          className="ml-auto"
+        >
+          {collapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+        </Button>
+      </div>
+      
+      <ScrollArea className="flex-1">
+        <nav className={cn("p-4", collapsed ? "px-2" : "")}>
+          <div className="space-y-4">
+            <div className="px-3 py-2">
+              <SidebarServices collapsed={collapsed} />
+            </div>
+            
+            <SidebarAdmin isAdmin={isAdmin} collapsed={collapsed} />
+            
+            <SidebarSupport onSignOut={handleSignOut} collapsed={collapsed} />
           </div>
-          
-          <SidebarAdmin isAdmin={isAdmin} />
-          
-          <SidebarSupport onSignOut={handleSignOut} />
-        </div>
-      </nav>
+        </nav>
+      </ScrollArea>
     </aside>
   );
 };

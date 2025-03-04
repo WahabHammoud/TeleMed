@@ -1,57 +1,123 @@
 
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Ambulance, Users, Heart, Home, ShoppingBag, Calendar, Video, MessageSquare, FileText } from "lucide-react";
+import { Ambulance, Users, Heart, Home, ShoppingBag, Calendar, Video, MessageSquare, FileText, ChevronDown } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const NavigationLinks: React.FC = () => {
   const location = useLocation();
+  
+  const links = [
+    { path: "/home", label: "Accueil", icon: Home },
+    { path: "/appointments", label: "Rendez-vous", icon: Calendar },
+    { path: "/consultations", label: "Consultations", icon: Video },
+    { path: "/emergency", label: "Urgences", icon: Ambulance },
+    { path: "/events", label: "Événements", icon: Users },
+    { path: "/home-visits", label: "Visites à domicile", icon: Heart },
+    { path: "/messages", label: "Messages", icon: MessageSquare },
+    { path: "/shop", label: "Boutique", icon: ShoppingBag },
+    { path: "/documents", label: "Documents", icon: FileText },
+    { path: "/community", label: "Communauté", icon: Users },
+  ];
   
   const isActive = (path: string) => {
     return location.pathname.startsWith(path) ? "text-medical-600" : "text-gray-600";
   };
 
   return (
-    <nav className="hidden lg:flex items-center space-x-6 overflow-x-auto py-2">
-      <Link to="/home" className={`${isActive('/home')} hover:text-medical-600 transition-colors whitespace-nowrap`}>
-        <Home className="h-4 w-4 inline-block mr-1" />
-        Accueil
-      </Link>
-      <Link to="/appointments" className={`${isActive('/appointments')} hover:text-medical-600 transition-colors whitespace-nowrap`}>
-        <Calendar className="h-4 w-4 inline-block mr-1" />
-        Rendez-vous
-      </Link>
-      <Link to="/consultations" className={`${isActive('/consultations')} hover:text-medical-600 transition-colors whitespace-nowrap`}>
-        <Video className="h-4 w-4 inline-block mr-1" />
-        Consultations
-      </Link>
-      <Link to="/emergency" className={`${isActive('/emergency')} hover:text-medical-600 transition-colors whitespace-nowrap`}>
-        <Ambulance className="h-4 w-4 inline-block mr-1" />
-        Urgences
-      </Link>
-      <Link to="/events" className={`${isActive('/events')} hover:text-medical-600 transition-colors whitespace-nowrap`}>
-        <Users className="h-4 w-4 inline-block mr-1" />
-        Événements
-      </Link>
-      <Link to="/home-visits" className={`${isActive('/home-visits')} hover:text-medical-600 transition-colors whitespace-nowrap`}>
-        <Heart className="h-4 w-4 inline-block mr-1" />
-        Visites à domicile
-      </Link>
-      <Link to="/messages" className={`${isActive('/messages')} hover:text-medical-600 transition-colors whitespace-nowrap`}>
-        <MessageSquare className="h-4 w-4 inline-block mr-1" />
-        Messages
-      </Link>
-      <Link to="/shop" className={`${isActive('/shop')} hover:text-medical-600 transition-colors whitespace-nowrap`}>
-        <ShoppingBag className="h-4 w-4 inline-block mr-1" />
-        Boutique
-      </Link>
-      <Link to="/documents" className={`${isActive('/documents')} hover:text-medical-600 transition-colors whitespace-nowrap`}>
-        <FileText className="h-4 w-4 inline-block mr-1" />
-        Documents
-      </Link>
-      <Link to="/community" className={`${isActive('/community')} hover:text-medical-600 transition-colors whitespace-nowrap`}>
-        <Users className="h-4 w-4 inline-block mr-1" />
-        Communauté
-      </Link>
-    </nav>
+    <>
+      {/* Desktop Navigation */}
+      <nav className="hidden xl:flex items-center space-x-6 py-2">
+        {links.slice(0, 6).map((link) => {
+          const Icon = link.icon;
+          return (
+            <Link 
+              key={link.path}
+              to={link.path} 
+              className={`${isActive(link.path)} hover:text-medical-600 transition-colors whitespace-nowrap flex items-center`}
+            >
+              <Icon className="h-4 w-4 inline-block mr-1" />
+              {link.label}
+            </Link>
+          );
+        })}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="px-2">
+              Plus
+              <ChevronDown className="h-4 w-4 ml-1" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <ScrollArea className="h-[300px]">
+              {links.slice(6).map((link) => {
+                const Icon = link.icon;
+                return (
+                  <DropdownMenuItem key={link.path} asChild>
+                    <Link 
+                      to={link.path} 
+                      className="flex items-center w-full"
+                    >
+                      <Icon className="h-4 w-4 mr-2" />
+                      {link.label}
+                    </Link>
+                  </DropdownMenuItem>
+                );
+              })}
+            </ScrollArea>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </nav>
+
+      {/* Medium screen navigation with fewer items */}
+      <nav className="hidden lg:flex xl:hidden items-center space-x-4 py-2">
+        {links.slice(0, 4).map((link) => {
+          const Icon = link.icon;
+          return (
+            <Link 
+              key={link.path}
+              to={link.path} 
+              className={`${isActive(link.path)} hover:text-medical-600 transition-colors whitespace-nowrap flex items-center`}
+            >
+              <Icon className="h-4 w-4 inline-block mr-1" />
+              {link.label}
+            </Link>
+          );
+        })}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="px-2">
+              Plus
+              <ChevronDown className="h-4 w-4 ml-1" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <ScrollArea className="h-[300px]">
+              {links.slice(4).map((link) => {
+                const Icon = link.icon;
+                return (
+                  <DropdownMenuItem key={link.path} asChild>
+                    <Link 
+                      to={link.path} 
+                      className="flex items-center w-full"
+                    >
+                      <Icon className="h-4 w-4 mr-2" />
+                      {link.label}
+                    </Link>
+                  </DropdownMenuItem>
+                );
+              })}
+            </ScrollArea>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </nav>
+    </>
   );
 };

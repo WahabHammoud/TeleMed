@@ -10,8 +10,8 @@ export const Header = () => {
   const { userProfile, isAdmin, handleSignOut } = useHeaderProfile();
 
   return (
-    <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b z-50">
-      <div className="container mx-auto px-4 py-4">
+    <header className="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b z-50">
+      <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <MobileMenuButton />

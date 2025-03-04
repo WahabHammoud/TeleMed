@@ -27,7 +27,7 @@ export function WelcomeHero() {
       </div>
       <div className="flex items-center justify-center">
         <img 
-          src="/mediconnect-logo.png" 
+          src="/lovable-uploads/0db0dd53-2d90-4ed9-b30e-242032a996cd.png" 
           alt="MediConnect" 
           className="rounded-lg object-cover max-h-[300px]"
         />
