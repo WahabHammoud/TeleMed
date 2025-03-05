@@ -114,9 +114,19 @@ export function ProductManagement() {
       }
 
       if (isNewProduct) {
+        // Ensure all required fields are present for the insert operation
+        const productToInsert = {
+          name: currentProduct.name,
+          description: currentProduct.description,
+          price: currentProduct.price,
+          stock: currentProduct.stock,
+          category: currentProduct.category || 'medications', // Default to medications if category is missing
+          image_url: currentProduct.image_url
+        };
+        
         const { data, error } = await supabase
           .from('products')
-          .insert([currentProduct])
+          .insert([productToInsert])
           .select();
         
         if (error) throw error;
