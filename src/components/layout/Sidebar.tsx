@@ -20,12 +20,12 @@ export const Sidebar = () => {
       collapsed ? "w-20" : "w-64"
     )}>
       <div className="h-20 flex items-center justify-between border-b px-4">
-        {!collapsed && <SidebarLogo />}
+        <SidebarLogo collapsed={collapsed} />
         <Button 
           variant="ghost" 
           size="icon" 
           onClick={() => setCollapsed(!collapsed)}
-          className="ml-auto"
+          className={cn("ml-auto", !collapsed ? "" : "mx-auto")}
         >
           {collapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
         </Button>
@@ -34,9 +34,7 @@ export const Sidebar = () => {
       <ScrollArea className="flex-1">
         <nav className={cn("p-4", collapsed ? "px-2" : "")}>
           <div className="space-y-4">
-            <div className="px-3 py-2">
-              <SidebarServices collapsed={collapsed} />
-            </div>
+            <SidebarServices collapsed={collapsed} />
             
             <SidebarAdmin isAdmin={isAdmin} collapsed={collapsed} />
             

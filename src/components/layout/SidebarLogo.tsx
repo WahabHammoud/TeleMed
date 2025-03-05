@@ -2,18 +2,24 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export const SidebarLogo: React.FC = () => {
+interface SidebarLogoProps {
+  collapsed?: boolean;
+}
+
+export const SidebarLogo: React.FC<SidebarLogoProps> = ({ collapsed = false }) => {
   return (
-    <div className="mb-4 px-4">
-      <Link to="/" className="flex flex-col items-center">
+    <div className={`mb-4 px-4 ${collapsed ? 'text-center' : ''}`}>
+      <Link to="/" className={`flex ${collapsed ? 'flex-col' : 'flex-col'} items-center`}>
         <img 
-          src="/mediconnect-logo.png" 
+          src="/lovable-uploads/0db0dd53-2d90-4ed9-b30e-242032a996cd.png" 
           alt="MediConnect Logo"
-          className="h-10 mx-auto mb-2"
+          className={`${collapsed ? 'h-8 mx-auto mb-1' : 'h-10 mx-auto mb-2'}`}
         />
-        <div className="text-center text-xs text-muted-foreground">
-          Votre santé, notre priorité
-        </div>
+        {!collapsed && (
+          <div className="text-center text-xs text-muted-foreground">
+            Votre santé, notre priorité
+          </div>
+        )}
       </Link>
     </div>
   );

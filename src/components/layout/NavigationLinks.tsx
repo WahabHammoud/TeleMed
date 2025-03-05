@@ -28,7 +28,7 @@ export const NavigationLinks: React.FC = () => {
   ];
   
   const isActive = (path: string) => {
-    return location.pathname.startsWith(path) ? "text-medical-600" : "text-gray-600";
+    return location.pathname.startsWith(path) ? "text-primary font-medium" : "text-gray-600";
   };
 
   return (
@@ -41,7 +41,7 @@ export const NavigationLinks: React.FC = () => {
             <Link 
               key={link.path}
               to={link.path} 
-              className={`${isActive(link.path)} hover:text-medical-600 transition-colors whitespace-nowrap flex items-center`}
+              className={`${isActive(link.path)} hover:text-primary transition-colors whitespace-nowrap flex items-center`}
             >
               <Icon className="h-4 w-4 inline-block mr-1" />
               {link.label}
@@ -84,7 +84,7 @@ export const NavigationLinks: React.FC = () => {
             <Link 
               key={link.path}
               to={link.path} 
-              className={`${isActive(link.path)} hover:text-medical-600 transition-colors whitespace-nowrap flex items-center`}
+              className={`${isActive(link.path)} hover:text-primary transition-colors whitespace-nowrap flex items-center`}
             >
               <Icon className="h-4 w-4 inline-block mr-1" />
               {link.label}

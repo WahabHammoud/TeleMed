@@ -30,7 +30,7 @@ export function useProfiles() {
         .select('*');
       
       if (error) throw error;
-      setProfiles(data);
+      setProfiles(data || []);
     } catch (error) {
       console.error('Error fetching profiles:', error);
       toast({
@@ -119,6 +119,7 @@ export function useProfiles() {
   };
 
   const filteredProfiles = profiles.filter(profile => {
+    if (!searchQuery) return true;
     const searchLower = searchQuery.toLowerCase();
     return (
       (profile.first_name?.toLowerCase().includes(searchLower) || 
