@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -9,7 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { ShoppingCart, Package, Filter, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface Product {
   id: string;
@@ -21,10 +20,27 @@ interface Product {
   stock: number;
 }
 
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image_url: string | null;
+}
+
 export default function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const { toast } = useToast();
-  const [cartItems, setCartItems] = useState<string[]>([]);
+  const navigate = useNavigate();
+  
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    const savedCart = localStorage.getItem('shoppingCart');
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('shoppingCart', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const { data: products, isLoading } = useQuery({
     queryKey: ['products'],
@@ -47,11 +63,28 @@ export default function ShopPage() {
     },
   });
 
-  const addToCart = (productId: string) => {
-    setCartItems([...cartItems, productId]);
+  const addToCart = (product: Product) => {
+    const existingItem = cartItems.find(item => item.id === product.id);
+    
+    if (existingItem) {
+      setCartItems(cartItems.map(item => 
+        item.id === product.id 
+          ? { ...item, quantity: item.quantity + 1 } 
+          : item
+      ));
+    } else {
+      setCartItems([...cartItems, {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: 1,
+        image_url: product.image_url
+      }]);
+    }
+    
     toast({
       title: "Added to cart",
-      description: "The product has been added to your cart",
+      description: `${product.name} has been added to your cart`,
     });
   };
 
@@ -76,7 +109,7 @@ export default function ShopPage() {
           <Button asChild variant="outline" className="flex items-center gap-2">
             <Link to="/shop/cart">
               <ShoppingCart className="h-4 w-4" />
-              Cart ({cartItems.length})
+              Cart ({cartItems.reduce((total, item) => total + item.quantity, 0)})
             </Link>
           </Button>
         </div>
@@ -142,7 +175,7 @@ export default function ShopPage() {
                         </span>
                         <Button 
                           size="sm" 
-                          onClick={() => addToCart(product.id)}
+                          onClick={() => addToCart(product)}
                           disabled={product.stock === 0}
                         >
                           {product.stock === 0 ? "Out of stock" : "Add to Cart"}

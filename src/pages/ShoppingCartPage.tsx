@@ -1,11 +1,11 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Trash2, ArrowLeft, CreditCard } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 
 interface CartItem {
@@ -18,28 +18,24 @@ interface CartItem {
 
 export default function ShoppingCartPage() {
   const { toast } = useToast();
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: "1",
-      name: "Thermomètre digital",
-      price: 19.99,
-      quantity: 1,
-      image_url: null
-    },
-    {
-      id: "2",
-      name: "Boîte de masques (50)",
-      price: 24.99,
-      quantity: 2,
-      image_url: null
-    }
-  ]);
+  const navigate = useNavigate();
+  
+  // Retrieve cart from localStorage on component mount
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    const savedCart = localStorage.getItem('shoppingCart');
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('shoppingCart', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const removeItem = (id: string) => {
     setCartItems(cartItems.filter(item => item.id !== id));
     toast({
-      title: "Produit retiré",
-      description: "Le produit a été retiré de votre panier",
+      title: "Item removed",
+      description: "The product has been removed from your cart",
     });
   };
 
@@ -49,12 +45,44 @@ export default function ShoppingCartPage() {
       item.id === id ? { ...item, quantity: newQuantity } : item
     ));
   };
+  
+  const handleCheckout = async () => {
+    if (cartItems.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "Cart is empty",
+        description: "Please add products to your cart before checkout"
+      });
+      return;
+    }
+    
+    try {
+      // Here we would typically create an order in the database
+      // For now, we'll just simulate a successful checkout
+      toast({
+        title: "Order placed successfully",
+        description: "Thank you for your purchase!",
+      });
+      
+      // Clear cart after successful checkout
+      setCartItems([]);
+      
+      // Redirect to a thank you page or back to shop
+      navigate('/shop');
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Checkout failed",
+        description: "There was an error processing your payment",
+      });
+    }
+  };
 
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity, 0
   );
   
-  const shipping = 5.99;
+  const shipping = cartItems.length > 0 ? 5.99 : 0;
   const total = subtotal + shipping;
 
   return (
@@ -64,7 +92,7 @@ export default function ShoppingCartPage() {
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Votre Panier</h1>
             <p className="text-muted-foreground mt-2">
-              {cartItems.length} article(s) dans votre panier
+              {cartItems.reduce((total, item) => total + item.quantity, 0)} article(s) dans votre panier
             </p>
           </div>
           <Button variant="outline" asChild>
@@ -173,7 +201,7 @@ export default function ShoppingCartPage() {
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full" size="lg">
+                  <Button className="w-full" size="lg" onClick={handleCheckout}>
                     <CreditCard className="h-4 w-4 mr-2" />
                     Procéder au paiement
                   </Button>

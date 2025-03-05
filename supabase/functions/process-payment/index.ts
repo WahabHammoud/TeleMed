@@ -13,54 +13,76 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') ?? '', {
 });
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { orderId, paymentMethodId } = await req.json();
+    const { orderId, paymentMethodId, cartItems, amount, customerEmail } = await req.json();
+
+    console.log('Processing payment for order:', orderId);
+    console.log('Cart items:', cartItems);
+    console.log('Total amount:', amount);
 
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Get order details
-    const { data: order, error: orderError } = await supabaseClient
-      .from('orders')
-      .select('*')
-      .eq('id', orderId)
-      .single();
-
-    if (orderError) throw orderError;
-
     // Create payment intent
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(order.total_amount * 100), // Convert to cents
-      currency: 'usd',
+      amount: Math.round(amount * 100), // Convert to cents
+      currency: 'eur',
       payment_method: paymentMethodId,
       confirm: true,
+      receipt_email: customerEmail,
       return_url: `${req.headers.get('origin')}/order-confirmation`,
+      metadata: {
+        order_id: orderId,
+      },
     });
 
-    // Update order status
-    if (paymentIntent.status === 'succeeded') {
-      await supabaseClient
-        .from('orders')
-        .update({ status: 'paid' })
-        .eq('id', orderId);
+    console.log('Payment intent created:', paymentIntent.id);
+
+    // If we have an order in the database, update its status
+    if (orderId) {
+      try {
+        const { error } = await supabaseClient
+          .from('orders')
+          .update({ 
+            status: paymentIntent.status === 'succeeded' ? 'paid' : 'processing',
+            payment_intent_id: paymentIntent.id,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', orderId);
+
+        if (error) {
+          console.error('Error updating order status:', error);
+        }
+      } catch (dbError) {
+        console.error('Database error:', dbError);
+        // Continue processing even if database update fails
+      }
     }
 
     return new Response(
-      JSON.stringify({ clientSecret: paymentIntent.client_secret }),
+      JSON.stringify({ 
+        success: true,
+        clientSecret: paymentIntent.client_secret,
+        status: paymentIntent.status
+      }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       },
     );
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error processing payment:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        success: false,
+        error: error.message 
+      }),
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

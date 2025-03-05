@@ -3,8 +3,22 @@ import { Layout } from "@/components/layout/Layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Ambulance, Phone, MapPin, Clock } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function EmergencyPage() {
+  const { toast } = useToast();
+  
+  const handleEmergencyCall = (number: string) => {
+    // On mobile, this will open the phone dialer
+    window.location.href = `tel:${number}`;
+    
+    // Show a toast to provide feedback on desktop
+    toast({
+      title: `Calling emergency number: ${number}`,
+      description: "On mobile devices, this will open your phone dialer",
+    });
+  };
+  
   return (
     <Layout>
       <div className="space-y-8">
@@ -26,11 +40,20 @@ export default function EmergencyPage() {
               <h2 className="text-2xl font-bold text-red-700 mb-2">Urgence médicale ?</h2>
               <p className="mb-4 text-gray-700">En cas d'urgence vitale, composez immédiatement le :</p>
               <div className="flex gap-4 flex-wrap">
-                <Button size="lg" className="bg-red-600 hover:bg-red-700 text-xl">
+                <Button 
+                  size="lg" 
+                  className="bg-red-600 hover:bg-red-700 text-xl"
+                  onClick={() => handleEmergencyCall("15")}
+                >
                   <Phone className="mr-2 h-5 w-5" />
                   15
                 </Button>
-                <Button size="lg" variant="outline" className="border-red-300 text-red-700 hover:bg-red-50 text-xl">
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="border-red-300 text-red-700 hover:bg-red-50 text-xl"
+                  onClick={() => handleEmergencyCall("112")}
+                >
                   <Phone className="mr-2 h-5 w-5" />
                   112
                 </Button>
@@ -62,7 +85,10 @@ export default function EmergencyPage() {
                   <span>Couverture : Paris et région parisienne</span>
                 </li>
               </ul>
-              <Button className="w-full mt-4">
+              <Button 
+                className="w-full mt-4"
+                onClick={() => handleEmergencyCall("15")}
+              >
                 <Phone className="mr-2 h-4 w-4" />
                 Appeler une ambulance
               </Button>
@@ -87,7 +113,10 @@ export default function EmergencyPage() {
                   <span>Disponible 24h/24 et 7j/7</span>
                 </li>
               </ul>
-              <Button className="w-full mt-4">
+              <Button 
+                className="w-full mt-4"
+                onClick={() => window.location.href = "/consultations"}
+              >
                 Démarrer une téléconsultation d'urgence
               </Button>
             </CardContent>
