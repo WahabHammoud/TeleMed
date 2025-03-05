@@ -22,9 +22,7 @@ export const Layout = ({ children }: LayoutProps) => {
       <Header onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <main className={`transition-all duration-300 pt-16 ${sidebarOpen && !isMobile ? 'lg:pl-64' : ''}`}>
-        <div className="container mx-auto px-4 py-8">
-          {children}
-        </div>
+        {children}
       </main>
     </div>
   );
