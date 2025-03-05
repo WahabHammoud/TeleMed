@@ -10,9 +10,15 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-export const Sidebar = () => {
+interface SidebarProps {
+  open?: boolean;
+  onClose?: () => void;
+}
+
+export const Sidebar = ({ open, onClose }: SidebarProps = {}) => {
   const { isAdmin, handleSignOut } = useSidebarProfile();
   const [collapsed, setCollapsed] = useState(false);
+  const isOpen = open !== undefined ? open : true;
   
   return (
     <aside className={cn(

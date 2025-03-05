@@ -6,7 +6,11 @@ import { NavigationLinks } from "./NavigationLinks";
 import { UserActions } from "./UserActions";
 import { useHeaderProfile } from "@/hooks/useHeaderProfile";
 
-export const Header = () => {
+interface HeaderProps {
+  onMenuToggle?: () => void;
+}
+
+export const Header = ({ onMenuToggle }: HeaderProps = {}) => {
   const { userProfile, isAdmin, handleSignOut } = useHeaderProfile();
 
   return (
@@ -14,7 +18,7 @@ export const Header = () => {
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <MobileMenuButton />
+            <MobileMenuButton onClick={onMenuToggle} />
             <HeaderLogo />
           </div>
           
