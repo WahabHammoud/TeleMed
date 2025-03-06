@@ -11,7 +11,7 @@ export const SidebarLogo: React.FC<SidebarLogoProps> = ({ collapsed = false }) =
     <div className={`mb-4 px-4 ${collapsed ? 'text-center' : ''}`}>
       <Link to="/" className={`flex ${collapsed ? 'flex-col' : 'flex-col'} items-center`}>
         <img 
-          src="/mediconnect-logo.png" 
+          src="/lovable-uploads/2e41f227-d6f4-4bca-a077-855c632ffa81.jpg" 
           alt="MediConnect Logo"
           className={`${collapsed ? 'h-8 mx-auto mb-1' : 'h-10 mx-auto mb-2'}`}
         />
