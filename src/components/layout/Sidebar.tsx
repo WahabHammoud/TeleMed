@@ -42,7 +42,9 @@ export const Sidebar = ({ open, onClose }: SidebarProps = {}) => {
           <div className="space-y-4">
             <SidebarServices collapsed={collapsed} />
             
-            <SidebarAdmin isAdmin={isAdmin} collapsed={collapsed} />
+            {isAdmin && (
+              <SidebarAdmin isAdmin={isAdmin} collapsed={collapsed} />
+            )}
             
             <SidebarSupport onSignOut={handleSignOut} collapsed={collapsed} />
           </div>

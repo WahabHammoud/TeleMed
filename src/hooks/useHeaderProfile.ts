@@ -6,6 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 
 export const useHeaderProfile = () => {
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -13,7 +14,10 @@ export const useHeaderProfile = () => {
     const getProfile = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        if (!user) {
+          setLoading(false);
+          return;
+        }
         
         const { data, error } = await supabase
           .from('profiles')
@@ -21,10 +25,18 @@ export const useHeaderProfile = () => {
           .eq('id', user.id)
           .single();
         
-        if (error) throw error;
+        if (error) {
+          console.error('Error fetching profile:', error);
+          setLoading(false);
+          return;
+        }
+        
         setUserProfile(data);
+        console.log('Header profile loaded:', data);
       } catch (error) {
-        console.error('Error fetching profile:', error);
+        console.error('Error in profile fetching:', error);
+      } finally {
+        setLoading(false);
       }
     };
     
@@ -49,9 +61,12 @@ export const useHeaderProfile = () => {
     }
   };
 
+  const isAdmin = userProfile?.role === 'admin';
+  
   return {
     userProfile,
-    isAdmin: userProfile?.role === 'admin',
+    isAdmin,
+    loading,
     handleSignOut
   };
 };

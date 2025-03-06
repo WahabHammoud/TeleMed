@@ -6,6 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 
 export const useSidebarProfile = () => {
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
   
@@ -13,7 +14,10 @@ export const useSidebarProfile = () => {
     const getProfile = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        if (!user) {
+          setLoading(false);
+          return;
+        }
         
         const { data, error } = await supabase
           .from('profiles')
@@ -23,40 +27,16 @@ export const useSidebarProfile = () => {
         
         if (error) {
           console.error('Error fetching profile:', error);
-          
-          // Try to determine role from user metadata as fallback
-          const { data: authUser } = await supabase.auth.getUser();
-          const metadata = authUser.user?.user_metadata;
-          if (metadata && metadata.user_role) {
-            setUserProfile({ 
-              role: metadata.user_role,
-              first_name: metadata.first_name,
-              last_name: metadata.last_name
-            });
-            
-            // Also try to fix the profile
-            const { error: upsertError } = await supabase
-              .from('profiles')
-              .upsert({
-                id: user.id,
-                role: metadata.user_role,
-                first_name: metadata.first_name,
-                last_name: metadata.last_name
-              });
-              
-            if (upsertError) {
-              console.error('Error creating profile from metadata:', upsertError);
-            }
-          }
+          setLoading(false);
           return;
         }
         
         setUserProfile(data);
-        
-        // Log to help with debugging
-        console.log('User profile loaded:', data);
+        console.log('Sidebar profile loaded:', data);
       } catch (error) {
         console.error('Error in profile fetching:', error);
+      } finally {
+        setLoading(false);
       }
     };
     
@@ -83,11 +63,10 @@ export const useSidebarProfile = () => {
 
   const isAdmin = userProfile?.role === 'admin';
   
-  // Add debug info to console
-  useEffect(() => {
-    console.log('Current user role:', userProfile?.role);
-    console.log('Is admin?', isAdmin);
-  }, [userProfile, isAdmin]);
-
-  return { userProfile, isAdmin, handleSignOut };
+  return { 
+    userProfile, 
+    isAdmin, 
+    loading, 
+    handleSignOut 
+  };
 };
