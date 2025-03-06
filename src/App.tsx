@@ -45,7 +45,7 @@ const App = () => {
       element: <DocumentsPage />,
     },
     {
-      path: "/admin-tools",
+      path: "/admin",
       element: <AdminPage />,
     },
   ]);

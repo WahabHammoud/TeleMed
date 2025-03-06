@@ -15,6 +15,7 @@ export const SidebarAdmin: React.FC<SidebarAdminProps> = ({ isAdmin, collapsed =
   
   if (!isAdmin) return null;
   
+  // Make sure this path matches the one defined in App.tsx
   const adminLink = {
     path: "/admin",
     icon: LayoutDashboard,
