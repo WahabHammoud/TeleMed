@@ -5,16 +5,16 @@ import { AppRoutes } from "./routes/AppRoutes";
 
 const AppContent = () => {
   const { session } = useAuth();
+  console.log("AppContent rendering with session:", session ? "exists" : "none");
   return <AppRoutes session={session} />;
 };
 
 const App = () => {
+  console.log("App initializing");
   return (
-    <React.StrictMode>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </React.StrictMode>
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 };
 

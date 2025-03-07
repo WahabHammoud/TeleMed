@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { Loader2 } from "lucide-react";
 
 export const SignInForm = () => {
   const [email, setEmail] = useState("");
@@ -12,6 +13,7 @@ export const SignInForm = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signIn } = useAuth();
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,14 +23,9 @@ export const SignInForm = () => {
         throw new Error("Please provide both email and password");
       }
 
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) throw error;
-
-      // Navigation will happen automatically in the useEffect of the parent component
+      await signIn(email, password);
+      
+      // If no error, navigation will happen automatically through protected routes
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -61,7 +58,14 @@ export const SignInForm = () => {
         />
       </div>
       <Button type="submit" className="w-full" disabled={loading}>
-        {loading ? "Signing in..." : "Sign In"}
+        {loading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Signing in...
+          </>
+        ) : (
+          "Sign In"
+        )}
       </Button>
     </form>
   );

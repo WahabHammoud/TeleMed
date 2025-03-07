@@ -1,6 +1,6 @@
 
 import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AdminRoute } from "@/components/auth/AdminRoute";
 
@@ -33,11 +33,11 @@ export const AppRoutes: React.FC<{ session: any }> = ({ session }) => {
     },
     {
       path: "/home",
-      element: <ProtectedRoute><HomePage /></ProtectedRoute>,
+      element: session ? <HomePage /> : <Navigate to="/" replace />,
     },
     {
       path: "/auth",
-      element: <AuthPage />,
+      element: session ? <Navigate to="/" replace /> : <AuthPage />,
     },
     {
       path: "/appointments",
