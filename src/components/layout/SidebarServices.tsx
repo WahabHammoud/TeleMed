@@ -37,10 +37,11 @@ export const SidebarServices: React.FC<SidebarServicesProps> = ({ collapsed = fa
   
   return (
     <div className="px-3 py-2">
-      {!collapsed && <h2 className="mb-2 px-4 text-lg font-semibold">Services</h2>}
+      {!collapsed && <h2 className="mb-2 px-4 text-lg font-semibold text-gray-700">Services</h2>}
       <div className="space-y-1">
         {serviceLinks.map((link) => {
           const Icon = link.icon;
+          const isActive = location.pathname === link.path;
           
           if (collapsed) {
             return (
@@ -51,7 +52,9 @@ export const SidebarServices: React.FC<SidebarServicesProps> = ({ collapsed = fa
                       to={link.path}
                       className={cn(
                         "flex justify-center items-center rounded-lg p-2 transition-all hover:text-primary",
-                        location.pathname === link.path ? "bg-slate-100 text-primary" : "text-gray-500"
+                        isActive 
+                          ? "bg-primary/10 text-primary shadow-sm" 
+                          : "text-gray-600 hover:bg-gray-100/80"
                       )}
                     >
                       <Icon className="h-5 w-5" />
@@ -71,7 +74,9 @@ export const SidebarServices: React.FC<SidebarServicesProps> = ({ collapsed = fa
               to={link.path}
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary",
-                location.pathname === link.path ? "bg-slate-100 text-primary font-medium" : "text-gray-500"
+                isActive 
+                  ? "bg-primary/10 text-primary font-medium shadow-sm" 
+                  : "text-gray-600 hover:bg-gray-100/80"
               )}
             >
               <Icon className="h-4 w-4" />

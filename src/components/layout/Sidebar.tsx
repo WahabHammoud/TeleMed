@@ -22,10 +22,10 @@ export const Sidebar = ({ open, onClose }: SidebarProps = {}) => {
   
   return (
     <aside className={cn(
-      "fixed left-0 top-0 h-screen bg-white border-r hidden lg:flex flex-col transition-all duration-300 z-40",
+      "fixed left-0 top-0 h-screen bg-gradient-to-b from-white to-blue-50 border-r hidden lg:flex flex-col transition-all duration-300 z-40 shadow-md",
       collapsed ? "w-20" : "w-64"
     )}>
-      <div className="h-20 flex items-center justify-between border-b px-4">
+      <div className="h-20 flex items-center justify-between border-b px-4 bg-white">
         <SidebarLogo collapsed={collapsed} />
         <Button 
           variant="ghost" 

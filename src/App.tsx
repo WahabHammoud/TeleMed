@@ -71,12 +71,14 @@ const App = () => {
           title: "Error",
           description: "Failed to fetch user role. Please try again later.",
         });
+        setUserRole(null);
       } else {
-        setUserRole(data?.role);
+        setUserRole(data?.role || null);
         console.log('User role fetched:', data?.role);
       }
     } catch (error) {
       console.error('Error in role fetching:', error);
+      setUserRole(null);
     } finally {
       setLoading(false);
     }
@@ -84,12 +86,14 @@ const App = () => {
 
   // Component for protected admin routes
   const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+    const location = useLocation();
+    
     if (loading) {
       return <div className="flex h-screen items-center justify-center">Loading...</div>;
     }
     
     if (!session) {
-      return <Navigate to="/auth" replace />;
+      return <Navigate to="/auth" state={{ from: location }} replace />;
     }
     
     if (userRole !== 'admin') {
@@ -106,12 +110,14 @@ const App = () => {
 
   // Component for protected authenticated routes
   const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+    const location = useLocation();
+    
     if (loading) {
       return <div className="flex h-screen items-center justify-center">Loading...</div>;
     }
     
     if (!session) {
-      return <Navigate to="/auth" replace />;
+      return <Navigate to="/auth" state={{ from: location }} replace />;
     }
     
     return <>{children}</>;
@@ -124,7 +130,7 @@ const App = () => {
     },
     {
       path: "/home",
-      element: <HomePage />,
+      element: <ProtectedRoute><HomePage /></ProtectedRoute>,
     },
     {
       path: "/auth",

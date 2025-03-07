@@ -48,15 +48,15 @@ export const useHeaderProfile = () => {
       await supabase.auth.signOut();
       navigate('/auth');
       toast({
-        title: "Signed out",
-        description: "You have been successfully signed out.",
+        title: "Déconnexion réussie",
+        description: "Vous avez été déconnecté avec succès.",
       });
     } catch (error) {
       console.error('Error signing out:', error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to sign out.",
+        title: "Erreur",
+        description: "Impossible de se déconnecter. Veuillez réessayer.",
       });
     }
   };
