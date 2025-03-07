@@ -37,8 +37,8 @@ export const SidebarServices: React.FC<SidebarServicesProps> = ({ collapsed = fa
   
   return (
     <div className="px-3 py-2">
-      {!collapsed && <h2 className="mb-2 px-4 text-lg font-semibold text-gray-700">Services</h2>}
-      <div className="space-y-1">
+      {!collapsed && <h2 className="mb-3 px-4 text-lg font-semibold text-gray-700 flex items-center">Services</h2>}
+      <div className="space-y-2">
         {serviceLinks.map((link) => {
           const Icon = link.icon;
           const isActive = location.pathname === link.path;
@@ -51,16 +51,16 @@ export const SidebarServices: React.FC<SidebarServicesProps> = ({ collapsed = fa
                     <Link
                       to={link.path}
                       className={cn(
-                        "flex justify-center items-center rounded-lg p-2 transition-all hover:text-primary",
+                        "flex justify-center items-center rounded-lg p-3 transition-all hover:text-primary",
                         isActive 
                           ? "bg-primary/10 text-primary shadow-sm" 
-                          : "text-gray-600 hover:bg-gray-100/80"
+                          : "text-gray-600 hover:bg-primary/5"
                       )}
                     >
                       <Icon className="h-5 w-5" />
                     </Link>
                   </TooltipTrigger>
-                  <TooltipContent side="right">
+                  <TooltipContent side="right" className="font-medium">
                     {link.label}
                   </TooltipContent>
                 </Tooltip>
@@ -73,14 +73,14 @@ export const SidebarServices: React.FC<SidebarServicesProps> = ({ collapsed = fa
               key={link.path}
               to={link.path}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary",
+                "flex items-center gap-3 rounded-lg px-3 py-2.5 transition-all hover:text-primary",
                 isActive 
                   ? "bg-primary/10 text-primary font-medium shadow-sm" 
-                  : "text-gray-600 hover:bg-gray-100/80"
+                  : "text-gray-600 hover:bg-primary/5"
               )}
             >
-              <Icon className="h-4 w-4" />
-              {link.label}
+              <Icon className="h-5 w-5 flex-shrink-0" />
+              <span className="truncate">{link.label}</span>
             </Link>
           );
         })}

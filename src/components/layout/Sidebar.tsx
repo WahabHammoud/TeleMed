@@ -22,16 +22,20 @@ export const Sidebar = ({ open, onClose }: SidebarProps = {}) => {
   
   return (
     <aside className={cn(
-      "fixed left-0 top-0 h-screen bg-gradient-to-b from-white to-blue-50 border-r hidden lg:flex flex-col transition-all duration-300 z-40 shadow-md",
-      collapsed ? "w-20" : "w-64"
+      "fixed left-0 top-0 h-screen transition-all duration-300 z-40 shadow-lg",
+      "bg-gradient-to-b from-blue-50 via-white to-blue-50 border-r",
+      "lg:flex flex-col",
+      collapsed ? "w-20" : "w-64",
+      isOpen ? "lg:translate-x-0" : "-translate-x-full lg:translate-x-0"
     )}>
-      <div className="h-20 flex items-center justify-between border-b px-4 bg-white">
+      <div className="h-20 flex items-center justify-between border-b px-4 bg-white/90 backdrop-blur-sm">
         <SidebarLogo collapsed={collapsed} />
         <Button 
           variant="ghost" 
           size="icon" 
           onClick={() => setCollapsed(!collapsed)}
-          className={cn("ml-auto", !collapsed ? "" : "mx-auto")}
+          className={cn("ml-auto text-primary hover:bg-primary/10 hover:text-primary-foreground", 
+            !collapsed ? "" : "mx-auto")}
         >
           {collapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
         </Button>
@@ -39,7 +43,7 @@ export const Sidebar = ({ open, onClose }: SidebarProps = {}) => {
       
       <ScrollArea className="flex-1">
         <nav className={cn("p-4", collapsed ? "px-2" : "")}>
-          <div className="space-y-4">
+          <div className="space-y-6">
             <SidebarServices collapsed={collapsed} />
             
             {isAdmin && (

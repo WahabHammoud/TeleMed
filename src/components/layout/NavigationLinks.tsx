@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 
 export const NavigationLinks: React.FC = () => {
   const location = useLocation();
@@ -28,7 +29,7 @@ export const NavigationLinks: React.FC = () => {
   ];
   
   const isActive = (path: string) => {
-    return location.pathname.startsWith(path) ? "text-primary font-medium" : "text-gray-600";
+    return location.pathname.startsWith(path);
   };
 
   return (
@@ -41,31 +42,36 @@ export const NavigationLinks: React.FC = () => {
             <Link 
               key={link.path}
               to={link.path} 
-              className={`${isActive(link.path)} hover:text-primary transition-colors whitespace-nowrap flex items-center`}
+              className={cn(
+                "flex items-center px-3 py-1.5 rounded-md hover:bg-primary/5 transition-colors whitespace-nowrap",
+                isActive(link.path) 
+                  ? "text-primary font-medium bg-primary/10" 
+                  : "text-gray-600"
+              )}
             >
-              <Icon className="h-4 w-4 inline-block mr-1" />
+              <Icon className="h-4 w-4 inline-block mr-1.5" />
               {link.label}
             </Link>
           );
         })}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="px-2">
+            <Button variant="ghost" className="px-3 py-1.5 flex items-center hover:bg-primary/5 rounded-md">
               Plus
-              <ChevronDown className="h-4 w-4 ml-1" />
+              <ChevronDown className="h-4 w-4 ml-1.5" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
+          <DropdownMenuContent align="end" className="w-56 rounded-xl shadow-lg p-1 border-gray-100">
             <ScrollArea className="h-[300px]">
               {links.slice(6).map((link) => {
                 const Icon = link.icon;
                 return (
-                  <DropdownMenuItem key={link.path} asChild>
+                  <DropdownMenuItem key={link.path} asChild className="py-2">
                     <Link 
                       to={link.path} 
-                      className="flex items-center w-full"
+                      className="flex items-center w-full rounded-md hover:bg-primary/5"
                     >
-                      <Icon className="h-4 w-4 mr-2" />
+                      <Icon className="h-4 w-4 mr-2 text-primary" />
                       {link.label}
                     </Link>
                   </DropdownMenuItem>
@@ -77,14 +83,19 @@ export const NavigationLinks: React.FC = () => {
       </nav>
 
       {/* Medium screen navigation with fewer items */}
-      <nav className="hidden lg:flex xl:hidden items-center space-x-4 py-2">
+      <nav className="hidden lg:flex xl:hidden items-center space-x-3 py-2">
         {links.slice(0, 4).map((link) => {
           const Icon = link.icon;
           return (
             <Link 
               key={link.path}
               to={link.path} 
-              className={`${isActive(link.path)} hover:text-primary transition-colors whitespace-nowrap flex items-center`}
+              className={cn(
+                "flex items-center px-2.5 py-1.5 rounded-md hover:bg-primary/5 transition-colors whitespace-nowrap",
+                isActive(link.path) 
+                  ? "text-primary font-medium bg-primary/10" 
+                  : "text-gray-600"
+              )}
             >
               <Icon className="h-4 w-4 inline-block mr-1" />
               {link.label}
@@ -93,22 +104,22 @@ export const NavigationLinks: React.FC = () => {
         })}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="px-2">
+            <Button variant="ghost" className="px-2.5 py-1.5 flex items-center hover:bg-primary/5 rounded-md">
               Plus
               <ChevronDown className="h-4 w-4 ml-1" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
+          <DropdownMenuContent align="end" className="w-56 rounded-xl shadow-lg p-1 border-gray-100">
             <ScrollArea className="h-[300px]">
               {links.slice(4).map((link) => {
                 const Icon = link.icon;
                 return (
-                  <DropdownMenuItem key={link.path} asChild>
+                  <DropdownMenuItem key={link.path} asChild className="py-2">
                     <Link 
                       to={link.path} 
-                      className="flex items-center w-full"
+                      className="flex items-center w-full rounded-md hover:bg-primary/5"
                     >
-                      <Icon className="h-4 w-4 mr-2" />
+                      <Icon className="h-4 w-4 mr-2 text-primary" />
                       {link.label}
                     </Link>
                   </DropdownMenuItem>

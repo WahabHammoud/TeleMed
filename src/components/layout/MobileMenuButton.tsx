@@ -12,10 +12,10 @@ export const MobileMenuButton: React.FC<MobileMenuButtonProps> = ({ onClick }) =
     <Button 
       variant="ghost" 
       size="icon" 
-      className="lg:hidden" 
+      className="lg:hidden hover:bg-primary/10 transition-colors" 
       onClick={onClick}
     >
-      <Menu className="h-6 w-6" />
+      <Menu className="h-6 w-6 text-primary" />
       <span className="sr-only">Toggle menu</span>
     </Button>
   );

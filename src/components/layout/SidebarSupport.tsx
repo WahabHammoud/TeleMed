@@ -22,9 +22,9 @@ export const SidebarSupport: React.FC<SidebarSupportProps> = ({ onSignOut, colla
   return (
     <div className={cn("px-3 py-2", collapsed ? "px-1" : "")}>
       {!collapsed && (
-        <h2 className="mb-2 px-4 text-lg font-semibold">Support</h2>
+        <h2 className="mb-3 px-4 text-lg font-semibold text-gray-700">Support</h2>
       )}
-      <div className="space-y-1">
+      <div className="space-y-2">
         {supportLinks.map((link) => {
           const Icon = link.icon;
           return collapsed ? (
@@ -34,14 +34,16 @@ export const SidebarSupport: React.FC<SidebarSupportProps> = ({ onSignOut, colla
                   <Link
                     to={link.path}
                     className={cn(
-                      "flex justify-center items-center rounded-lg p-2 transition-all hover:text-primary",
-                      location.pathname === link.path ? "bg-slate-100 text-primary" : "text-gray-500"
+                      "flex justify-center items-center rounded-lg p-3 transition-all hover:text-primary",
+                      location.pathname === link.path 
+                        ? "bg-primary/10 text-primary" 
+                        : "text-gray-500 hover:bg-primary/5"
                     )}
                   >
                     <Icon className="h-5 w-5" />
                   </Link>
                 </TooltipTrigger>
-                <TooltipContent side="right">
+                <TooltipContent side="right" className="font-medium">
                   {link.label}
                 </TooltipContent>
               </Tooltip>
@@ -51,27 +53,31 @@ export const SidebarSupport: React.FC<SidebarSupportProps> = ({ onSignOut, colla
               key={link.path}
               to={link.path}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary",
-                location.pathname === link.path ? "bg-slate-100 text-primary font-medium" : "text-gray-500"
+                "flex items-center gap-3 rounded-lg px-3 py-2.5 transition-all hover:text-primary",
+                location.pathname === link.path 
+                  ? "bg-primary/10 text-primary font-medium" 
+                  : "text-gray-500 hover:bg-primary/5"
               )}
             >
-              <Icon className="h-4 w-4" />
-              {link.label}
+              <Icon className="h-5 w-5 flex-shrink-0" />
+              <span>{link.label}</span>
             </Link>
           );
         })}
+
+        {/* Logout button */}
         {collapsed ? (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
                   onClick={onSignOut}
-                  className="flex justify-center w-full items-center rounded-lg p-2 text-gray-500 transition-all hover:text-primary"
+                  className="flex justify-center w-full items-center rounded-lg p-3 text-red-500 transition-all hover:bg-red-50 hover:text-red-600"
                 >
                   <LogOut className="h-5 w-5" />
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="right">
+              <TooltipContent side="right" className="font-medium">
                 Déconnexion
               </TooltipContent>
             </Tooltip>
@@ -79,10 +85,10 @@ export const SidebarSupport: React.FC<SidebarSupportProps> = ({ onSignOut, colla
         ) : (
           <button
             onClick={onSignOut}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-primary"
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-red-500 transition-all hover:bg-red-50 hover:text-red-600 mt-2"
           >
-            <LogOut className="h-4 w-4" />
-            Déconnexion
+            <LogOut className="h-5 w-5 flex-shrink-0" />
+            <span>Déconnexion</span>
           </button>
         )}
       </div>
