@@ -59,14 +59,20 @@ export default function Index({ session }: IndexProps) {
             </Button>
           ) : (
             <div className="flex items-center gap-4">
-              {isAdmin && (
-                <Button variant="outline" asChild className="shadow-sm hover:shadow-md transition-all">
-                  <Link to="/admin">
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    Dashboard Admin
-                  </Link>
-                </Button>
-              )}
+              
+              
+                    {isAdmin && (
+                      <Button 
+                        variant="outline" 
+                        asChild 
+                        className="shadow-sm hover:shadow-md transition-all"
+                      >
+                        <Link to="/admin/dashboard">  {/* Changed to direct link */}
+                          <LayoutDashboard className="mr-2 h-4 w-4" />
+                          Dashboard Admin
+                        </Link>
+                      </Button>
+                    )}
               <Button variant="outline" onClick={handleSignOut} className="shadow-sm hover:shadow-md transition-all">
                 <LogOut className="mr-2 h-4 w-4" />
                 Déconnexion

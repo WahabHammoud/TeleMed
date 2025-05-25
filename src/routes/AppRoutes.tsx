@@ -1,4 +1,3 @@
-
 import React from "react";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
@@ -23,6 +22,7 @@ import HelpPage from "@/pages/HelpPage";
 import ComplaintsPage from "@/pages/ComplaintsPage";
 import ShoppingCartPage from "@/pages/ShoppingCartPage";
 import AdminPage from "@/pages/AdminPage";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
 import NotFound from "@/pages/NotFound";
 
 export const AppRoutes: React.FC<{ session: any }> = ({ session }) => {
@@ -95,10 +95,22 @@ export const AppRoutes: React.FC<{ session: any }> = ({ session }) => {
       path: "/complaints",
       element: <ProtectedRoute><ComplaintsPage /></ProtectedRoute>,
     },
+    // Add this nested route configuration
+{
+  path: "/admin",
+  element: <AdminRoute><AdminPage /></AdminRoute>,
+  children: [
     {
-      path: "/admin",
-      element: <AdminRoute><AdminPage /></AdminRoute>,
+      index: true,
+      element: <Navigate to="dashboard" replace />,
     },
+    {
+      path: "dashboard",
+      element: <AdminDashboard />,
+    },
+    // Add other admin sub-routes here
+  ]
+},
     {
       path: "*",
       element: <NotFound />,
